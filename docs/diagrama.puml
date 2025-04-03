@@ -1,0 +1,31 @@
+@startuml
+class Gasto {
+    - id: Int
+    - data: LocalDate
+    - valor: Double
+    - categoria: String
+    - usuarioId: Int
+    + cadastrar(): void
+}
+
+class Usuario {
+    - id: Int
+    - nome: String
+    - email: String
+    - senha: String
+    + adicionarGasto(g: Gasto): void
+    + autenticacao(e: String, s: String): Boolean
+    + simularInvestimento(valor: Double, tempo: Int): void
+}
+
+class Investimento {
+    - id: Int
+    - meta: Double
+    - tipo: String
+    - taxa: Double
+    + buscarTaxa(): Double
+    + adicionarValor(val: Double): void
+}
+
+Usuario --> Gasto : "tem"
+@enduml
