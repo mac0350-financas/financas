@@ -1,31 +1,44 @@
 @startuml
-class Gasto {
-    - id: Int
-    - data: LocalDate
-    - valor: Double
-    - categoria: String
-    - usuarioId: Int
-    + cadastrar(): void
-}
 
 class Usuario {
     - id: Int
     - nome: String
     - email: String
     - senha: String
-    + adicionarGasto(g: Gasto): void
-    + autenticacao(e: String, s: String): Boolean
-    + simularInvestimento(valor: Double, tempo: Int): void
+}
+
+class Transacao {
+    - id: Int
+    - data: LocalDate
+    - valor: Double
+    - tipo: TipoTransacao
+    - categoria: String
+    - usuarioId: Int
+}
+
+enum TipoTransacao {
+    ENTRADA
+    SAIDA
+}
+
+class Meta {
+    - id: Int
+    - usuarioId: Int
+    - categoria: String
+    - valorLimite: Double
+    - periodo: String
 }
 
 class Investimento {
     - id: Int
-    - meta: Double
-    - tipo: String
+    - usuarioId: Int
+    - valorInvestido: Double
     - taxa: Double
-    + buscarTaxa(): Double
-    + adicionarValor(val: Double): void
+    - dataInicial: LocalDate
 }
 
-Usuario --> Gasto : "tem"
+Usuario --> Transacao : possui >
+Usuario --> Meta : define >
+Usuario --> Investimento : simula >
+
 @enduml
