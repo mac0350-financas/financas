@@ -7,6 +7,8 @@ Finature é o seu sistema de gerenciamento de finanças e investimentos. Utiliza
 - Versão do Vite: 6.2.3
 - Versão do Ktor: 3.1.1
 
+Para instalar as dependências do NPM, faça o comando `npm install` no diretório `client`.
+
 ## Acessando o front-end
 
 1. Acesse um terminal;
