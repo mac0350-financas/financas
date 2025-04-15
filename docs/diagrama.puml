@@ -5,6 +5,10 @@ class Usuario {
     - nome: String
     - email: String
     - senha: String
+    + atualizarNome(novoNome: String): void
+    + atualizarEmail(novoEmail: String): void
+    + atualizarSenha(novaSenha: String): void
+    + autenticar(email: String, senha: String): Boolean
 }
 
 class Transacao {
@@ -35,6 +39,9 @@ class Investimento {
     - valorInvestido: Double
     - taxa: Double
     - dataInicial: LocalDate
+    - dataFinal: LocalDate
+    + calculaRendimento(): Double
+
 }
 
 Usuario --> Transacao : possui >
@@ -42,3 +49,4 @@ Usuario --> Meta : define >
 Usuario --> Investimento : simula >
 
 @enduml
+
