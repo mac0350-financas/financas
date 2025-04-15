@@ -9,7 +9,6 @@ class Usuario {
     + atualizarEmail(novoEmail: String): void
     + atualizarSenha(novaSenha: String): void
     + autenticar(email: String, senha: String): Boolean
-
 }
 
 class Transacao {
@@ -42,6 +41,7 @@ class Investimento {
     - dataInicial: LocalDate
     - dataFinal: LocalDate
     + calculaRendimento(): Double
+
 }
 
 Usuario --> Transacao : possui >
@@ -49,3 +49,4 @@ Usuario --> Meta : define >
 Usuario --> Investimento : simula >
 
 @enduml
+
