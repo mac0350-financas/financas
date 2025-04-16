@@ -1,4 +1,4 @@
-@startuml
+@startuml name
 
 class Usuario {
     - id: Int
@@ -49,4 +49,3 @@ Usuario --> Meta : define >
 Usuario --> Investimento : simula >
 
 @enduml
-
