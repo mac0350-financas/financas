@@ -2,15 +2,13 @@ package com.finature.db.tables
 
 import org.jetbrains.exposed.sql.Table
 import com.finature.db.tables.TipoTransacaoTable
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.javatime.date
 
-object TransacaoTable : Table("transacoes") {
-    val id = integer("id").autoIncrement() 
+object TransacaoTable : IntIdTable("transacoes") {
     val data = date("data")
     val valor = double("valor")
-    val tipo = reference("tipo", TipoTransacaoTable.tipo)
+    val tipoId = reference("tipo", TipoTransacaoTable)
     val categoria = varchar("categoria", 50)
-    val usuarioId = reference("usuario_id", UsuarioTable.id)
-
-    override val primaryKey = PrimaryKey(id)
+    val usuarioId = reference("usuario_id", UsuarioTable)
 }

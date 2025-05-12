@@ -1,6 +1,7 @@
 package com.finature
 
 import org.jetbrains.exposed.sql.Database
+import com.finature.db.tables.*
 import org.jetbrains.exposed.sql.SchemaUtils
 import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -14,11 +15,15 @@ fun Application.configureDatabases() {
         password = ""
     )
 
-    // Inicializa as tabelas
-    /*transaction {
+    transaction {
         SchemaUtils.create(
+            UsuarioTable,
+            InvestimentoTable,
+            MetaTable,
+            TransacaoTable,
+            TipoTransacaoTable,
         )
-    }*/
+    }
 }
 
  
