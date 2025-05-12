@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+    implementation("org.flywaydb:flyway-core:10.12.0")
     implementation("org.jetbrains.exposed:exposed-core:0.45.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.45.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.45.0")
