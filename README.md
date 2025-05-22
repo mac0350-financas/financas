@@ -34,6 +34,7 @@ Ainda em fase de implementação
 
 ## Estrutura do projeto
 
+```text
 finature/
 ├── server/                          # Backend (Ktor + Kotlin)
 │   ├── config/                      # Configurações (segurança, logs, serialização, etc)
@@ -58,6 +59,7 @@ finature/
 ├── gradle/                           # Configurações do Gradle (libs.versions.toml, etc)
 │
 └── README.md                        
+```
 
 ## Diagrama UML
 
