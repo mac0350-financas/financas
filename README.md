@@ -63,4 +63,4 @@ finature/
 
 ## Diagrama UML
 
-![Diagrama UML](docs/uml/diagrama.jpeg)
+![Diagrama UML](docs/diagrama.jpeg)
