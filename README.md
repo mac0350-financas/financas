@@ -61,6 +61,10 @@ finature/
 └── README.md                        
 ```
 
+## Uso de IA no desenvolvimento
+
+IAs estão sendo utilizadas ao longo do processo de desenvolvimento para consultas de sintaxe das linguagens e outras dúvidas "operacionais", como organização dos diretórios, entre outros. O planejamento, escolha das features e funcionalidade principais, bem como o layout do site, foram feitas sem uso de IA.
+
 ## Diagrama UML
 
 ![Diagrama UML](docs/diagrama.jpeg)
