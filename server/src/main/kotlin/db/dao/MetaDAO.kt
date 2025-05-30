@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import com.finature.models.MetaDTO
 
-class MetaDTO(id: EntityID<Int>) : IntEntity(id) {
+class MetaDAO(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<MetaDAO>(MetaTable)
 
     var usuarioId by MetaTable.usuarioId
