@@ -8,6 +8,6 @@ object InvestimentoTable : IntIdTable("investimentos") {
     val usuarioId = reference("usuario_id", UsuarioTable)
     val valorInvestido = double("valor_investido")
     val taxa = double("taxa")
-    val dataInicial = varchar("data_inicial",50)
-    val dataFinal = varchar("data_final",50)
+    val dataInicial = varchar("data_inicial",255)
+    val dataFinal = varchar("data_final",255)
 }
