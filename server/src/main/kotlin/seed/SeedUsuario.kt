@@ -19,5 +19,13 @@ fun seedUsuario() {
                 this.senha = senhaHash
             }
         }
+
+        UsuarioDAO.new {
+            this.nome = "finature"
+            this.email = "finature@finature.com"
+            this.senha = BCrypt.hashpw("finature", BCrypt.gensalt())
+        }
+
     }
+
 }
