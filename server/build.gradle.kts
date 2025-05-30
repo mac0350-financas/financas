@@ -34,6 +34,8 @@ dependencies {
 
     implementation("org.flywaydb:flyway-core:8.0.5")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.7")
+    implementation("com.github.javafaker:javafaker:1.0.2")
+    implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
