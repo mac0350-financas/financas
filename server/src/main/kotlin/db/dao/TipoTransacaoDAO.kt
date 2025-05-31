@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import com.finature.models.TipoTransacaoDTO
 
-class TipoTransacaoDTO(id: EntityID<Int>) : IntEntity(id) {
+class TipoTransacaoDAO(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<TipoTransacaoDAO>(TipoTransacaoTable)
 
     var tipo by TipoTransacaoTable.tipo
@@ -14,4 +14,5 @@ class TipoTransacaoDTO(id: EntityID<Int>) : IntEntity(id) {
     fun toDTO() = TipoTransacaoDTO(
         id = this.id.value,
         tipo = tipo
+    )
 }
