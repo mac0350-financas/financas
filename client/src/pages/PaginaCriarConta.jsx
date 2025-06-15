@@ -1,5 +1,7 @@
+import Formulario from '../components/PaginaCriarConta/Formulario';
+
 function PaginaCriarConta() {
-    return <h1>Criar Conta no Finature 💸</h1>;
+    return <Formulario />;
 }
 
 export default PaginaCriarConta;
