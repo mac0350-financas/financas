@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 const Campo = styled(TextField)({
     height: '40px',
-    width: '100%',
+    width: '97%',
     backgroundColor: '#D9D9D9',
     borderRadius: '16px',
     '& .MuiInputBase-root': {
@@ -25,8 +25,10 @@ const Texto = styled(Typography)({
 
 function CampoDeInformacao({ text, name, type, value, onChange, ...props }) {
     return (
-        <div>
-            <Texto>{text}</Texto>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+            <div style={{ width: '97%' }}>
+                <Texto>{text}</Texto>
+            </div>
             <Campo
                 variant="outlined"
                 name={name}
@@ -34,7 +36,6 @@ function CampoDeInformacao({ text, name, type, value, onChange, ...props }) {
                 value={value}
                 onChange={onChange}
                 required
-                fullWidth
             />
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Alert } from '@mui/material';
+import { Box, Alert, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import CampoDeInformacao from './CampoDeInformacao';
 import BotaoEnviarFormulario from './BotaoEnviarFormulario';
@@ -7,9 +7,29 @@ import BotaoEnviarFormulario from './BotaoEnviarFormulario';
 const FormularioBox = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
-    maxWidth: '50%',
-    margin: '0 auto',
+    gap: '24px',
+    width: '1024px',
+    backgroundColor: 'rgba(217, 217, 217, 0.5)',
+    padding: '24px',
+    borderRadius: '16px',
+});
+
+const TituloTexto = styled(Typography)({
+    fontSize: '24px',
+    fontFamily: 'Kantumruy Pro, sans-serif',
+    color: '#8899A6',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: '24px',
+});
+
+const Container = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    width: '100%',
 });
 
 function Formulario() {
@@ -101,42 +121,44 @@ function Formulario() {
     };
 
     return (
-        <FormularioBox component="form" onSubmit={handleSubmit}>
-            {error && <Alert severity="error" sx={{ marginBottom: '16px' }}>{error}</Alert>}
-            {success && <Alert severity="success" sx={{ marginBottom: '16px' }}>Conta criada com sucesso!</Alert>}
-
-            <CampoDeInformacao
-                text="Como gostaria de ser chamado?"
-                name="nome"
-                type="text"
-                value={formData.nome}
-                onChange={handleChange}
-            />
-            <CampoDeInformacao
-                text="Qual é o seu e-mail?"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-            />
-            <CampoDeInformacao
-                text="Crie uma senha"
-                name="senha"
-                type="password"
-                value={formData.senha}
-                onChange={handleChange}
-            />
-            <CampoDeInformacao
-                text="Confirme sua senha"
-                name="confirmarSenha"
-                type="password"
-                value={formData.confirmarSenha}
-                onChange={handleChange}
-            />
-            <BotaoEnviarFormulario disabled={loading}>
-                {loading ? 'CRIANDO CONTA...' : 'VOU SER FINATURE'}
-            </BotaoEnviarFormulario>
-        </FormularioBox>
+        <Container>
+            <TituloTexto>Falta pouco para você ser Finature 🤍</TituloTexto>
+            {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '1024px' }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '1024px' }}>Conta criada com sucesso!</Alert>}
+            <FormularioBox component="form" onSubmit={handleSubmit}>
+                <CampoDeInformacao
+                    text="Como gostaria de ser chamado?"
+                    name="nome"
+                    type="text"
+                    value={formData.nome}
+                    onChange={handleChange}
+                />
+                <CampoDeInformacao
+                    text="Qual é o seu e-mail?"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                <CampoDeInformacao
+                    text="Crie uma senha"
+                    name="senha"
+                    type="password"
+                    value={formData.senha}
+                    onChange={handleChange}
+                />
+                <CampoDeInformacao
+                    text="Confirme sua senha"
+                    name="confirmarSenha"
+                    type="password"
+                    value={formData.confirmarSenha}
+                    onChange={handleChange}
+                />
+                <BotaoEnviarFormulario disabled={loading}>
+                    {loading ? 'CRIANDO CONTA...' : 'VOU SER FINATURE'}
+                </BotaoEnviarFormulario>
+            </FormularioBox>
+        </Container>
     );
 }
 
