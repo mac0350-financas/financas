@@ -16,7 +16,6 @@ class InvestimentoDAO(id: EntityID<Int>) : IntEntity(id) {
     var dataFinal by InvestimentoTable.dataFinal
 
     fun toDTO() = InvestimentoDTO(
-        id = this.id.value,
         usuarioId = usuarioId.value, 
         valorInvestido = valorInvestido,
         taxa = taxa,

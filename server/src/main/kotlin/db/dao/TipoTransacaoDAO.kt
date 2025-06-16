@@ -12,7 +12,6 @@ class TipoTransacaoDAO(id: EntityID<Int>) : IntEntity(id) {
     var tipo by TipoTransacaoTable.tipo
 
     fun toDTO() = TipoTransacaoDTO(
-        id = this.id.value,
         tipo = tipo
     )
 }

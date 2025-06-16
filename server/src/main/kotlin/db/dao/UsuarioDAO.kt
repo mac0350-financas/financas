@@ -14,7 +14,6 @@ class UsuarioDAO(id: EntityID<Int>) : IntEntity(id) {
     var senha by UsuarioTable.senha
 
     fun toDTO() = UsuarioDTO(
-        id = this.id.value,
         nome = nome,
         email = email,
         senha = senha

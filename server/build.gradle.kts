@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
@@ -31,6 +30,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+    implementation("io.ktor:ktor-server-cors")
 
     implementation("org.flywaydb:flyway-core:8.0.5")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.7")
