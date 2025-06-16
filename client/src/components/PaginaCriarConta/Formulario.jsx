@@ -51,7 +51,7 @@ function Formulario() {
         return true;
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => { 
         e.preventDefault();
         setError('');
         setSuccess(false);
@@ -65,6 +65,7 @@ function Formulario() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     nome: formData.nome,
@@ -79,7 +80,7 @@ function Formulario() {
                 setFormData({ nome: '', email: '', senha: '', confirmarSenha: '' });
 
                 setTimeout(() => {
-                     window.location.href = '/login';
+                     window.location.href = '/fazer-login';
                 }, 2000);
             } 
             else {
