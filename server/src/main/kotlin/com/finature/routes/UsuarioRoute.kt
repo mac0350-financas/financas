@@ -11,9 +11,9 @@ import kotlinx.serialization.encodeToString
 
 import com.finature.models.UsuarioDTO
 import com.finature.services.UsuarioService
-import com.finature.repositories.UsuarioRepository
+import com.finature.repositories.UsuarioRepository 
 
-fun Route.criarContaRoutes() {
+fun Route.usuarioRoute() {
     
     post("/formulario-cadastro") {
 

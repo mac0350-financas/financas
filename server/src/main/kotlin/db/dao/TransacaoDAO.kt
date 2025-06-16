@@ -16,7 +16,6 @@ class TransacaoDAO(id: EntityID<Int>) : IntEntity(id) {
     var categoria by TransacaoTable.categoria
 
     fun toDTO() = TransacaoDTO(
-        id = this.id.value,
         usuarioId = usuarioId.value, 
         data = data,
         valor = valor,

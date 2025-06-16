@@ -15,7 +15,6 @@ class MetaDAO(id: EntityID<Int>) : IntEntity(id) {
     var periodo by MetaTable.periodo
 
     fun toDTO() = MetaDTO(
-        id = this.id.value,
         usuarioId = usuarioId.value,
         categoria = categoria,
         valorLimite = valorLimite,

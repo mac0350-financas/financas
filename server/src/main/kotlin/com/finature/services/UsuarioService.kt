@@ -16,6 +16,6 @@ class UsuarioService(private val usuarioRepository: UsuarioRepository) {
             senha = senha
         )
         
-        usuarioRepository.salvaUsuario(usuario)
+        usuarioRepository.salvaUsuario(usuario) 
     }
 }
