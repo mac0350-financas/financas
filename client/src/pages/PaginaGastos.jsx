@@ -1,5 +1,11 @@
+import HeaderComMenu from '../components/HeaderComMenu';
+
 function PaginaGastos() {
-    return <h1>Página de Gastos 💰</h1>;
+    return (
+        <div>
+            <HeaderComMenu />
+        </div>
+    );
 }
 
-export default PaginaGastos;
+export default PaginaGastos; 

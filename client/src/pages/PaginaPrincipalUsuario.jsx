@@ -1,5 +1,11 @@
+import HeaderComMenu from '../components/HeaderComMenu';
+
 function PaginaPrincipalUsuario() {
-    return <h1>Página Principal do Usuário 💼</h1>;
+    return (
+        <div>
+            <HeaderComMenu />
+        </div>
+    );
 }
 
-export default PaginaPrincipalUsuario;
+export default PaginaPrincipalUsuario; 

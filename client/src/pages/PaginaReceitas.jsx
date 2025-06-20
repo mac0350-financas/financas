@@ -1,5 +1,11 @@
+import HeaderComMenu from '../components/HeaderComMenu';
+
 function PaginaReceitas() {
-    return <h1>Página de Receitas 💰</h1>;
+    return (
+        <div>
+            <HeaderComMenu />
+        </div>
+    );
 }
 
-export default PaginaReceitas;
+export default PaginaReceitas; 

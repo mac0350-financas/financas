@@ -1,5 +1,11 @@
+import HeaderComMenu from '../components/HeaderComMenu';
+
 function PaginaInvestimentos() {
-    return <h1>Página de Investimentos 💹</h1>;
+    return (
+        <div>
+            <HeaderComMenu />
+        </div>
+    );
 }
 
-export default PaginaInvestimentos;
+export default PaginaInvestimentos; 
