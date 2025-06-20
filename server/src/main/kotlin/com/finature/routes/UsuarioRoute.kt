@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
@@ -12,6 +13,7 @@ import kotlinx.serialization.encodeToString
 import com.finature.models.UsuarioDTO
 import com.finature.services.UsuarioService
 import com.finature.repositories.UsuarioRepository 
+import com.finature.sessions.UsuarioSessao
 
 fun Route.usuarioRoute() {
     
@@ -49,6 +51,7 @@ fun Route.usuarioRoute() {
                 email = request.email,
                 senha = request.senha
             )
+            call.sessions.set(UsuarioSessao(usuario.nome, usuario.email))
             call.respond(HttpStatusCode.OK, mapOf("message" to "Login realizado com sucesso"))
         } 
         
@@ -62,5 +65,20 @@ fun Route.usuarioRoute() {
         }
 
     }
+
+    post("/logout") {
+        call.sessions.clear<UsuarioSessao>()
+        call.respond(HttpStatusCode.OK, mapOf("message" to "Logout feito com sucesso"))
+    }
+
+    get("/usuario-logado") {
+        val sessao = call.sessions.get<UsuarioSessao>()
+        if (sessao == null) {
+            call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "Usuário não logado"))
+        } else {
+            call.respond(HttpStatusCode.OK, sessao)
+        }
+    }
+    
     
 }
