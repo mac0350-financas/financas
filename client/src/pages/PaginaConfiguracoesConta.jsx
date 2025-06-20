@@ -1,5 +1,11 @@
+import HeaderComMenu from '../components/HeaderComMenu';
+
 function PaginaConfiguracoesConta() {
-    return <h1>Configurações da Conta</h1>;
+    return (
+        <div>
+            <HeaderComMenu />
+        </div>
+    );
 }
 
-export default PaginaConfiguracoesConta;
+export default PaginaConfiguracoesConta; 
