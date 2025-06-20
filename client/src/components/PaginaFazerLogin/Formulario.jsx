@@ -83,6 +83,7 @@ function Formulario() {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
+                    nome: 'null',
                     email: formData.email,
                     senha: formData.senha
                 }),
@@ -117,8 +118,8 @@ function Formulario() {
     return (
         <Container>
             <TituloTexto>Entre na sua conta e economize agora! 😍</TituloTexto>
-            {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '1024px' }}>{error}</Alert>}
-            {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '1024px' }}>Conta criada com sucesso!</Alert>}
+            {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '524px' }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '524px' }}>Login realizado com sucesso!</Alert>}
             <FormularioBox component="form" onSubmit={handleSubmit}>
                 <CampoDeInformacao
                     text="Insira seu email"

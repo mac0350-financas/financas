@@ -18,4 +18,14 @@ class UsuarioService(private val usuarioRepository: UsuarioRepository) {
         
         usuarioRepository.salvaUsuario(usuario) 
     }
+
+    fun fazerLogin(email: String, senha: String): UsuarioDTO {
+        
+        val usuario = usuarioRepository.verificaEmailExistente(email)
+            ?: throw Exception("Email não encontrado")
+        
+        if (usuario.senha != senha) throw Exception("Senha incorreta")
+
+        return usuario
+    }
 }

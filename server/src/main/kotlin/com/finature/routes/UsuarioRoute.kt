@@ -38,5 +38,29 @@ fun Route.usuarioRoute() {
         }
 
     }
+
+    post("/formulario-login") {
+
+        try {
+            val request = call.receive<UsuarioDTO>()
+            val usuarioRepository = UsuarioRepository()
+            val usuarioService = UsuarioService(usuarioRepository)
+            val usuario = usuarioService.fazerLogin(
+                email = request.email,
+                senha = request.senha
+            )
+            call.respond(HttpStatusCode.OK, mapOf("message" to "Login realizado com sucesso"))
+        } 
+        
+        catch (e: Exception) {
+            val (statusCode, message) = when (e.message) {
+                "Email não encontrado" -> HttpStatusCode.NotFound to "Email não encontrado"
+                "Senha incorreta" -> HttpStatusCode.Unauthorized to "Senha incorreta"
+                else -> HttpStatusCode.InternalServerError to "Erro interno do servidor"
+            }
+            call.respond(statusCode, mapOf("message" to message))
+        }
+
+    }
     
 }
