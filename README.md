@@ -11,6 +11,7 @@ A aplicação segue a arquitetura MVC, com backend desenvolvido em Kotlin utiliz
 - Versão do Kotlin: 2.1.20
 
 Para instalar as dependências do NPM, faça o comando `npm install` no diretório `client`.
+Precisa também de `npm install react-material-ui-carousel`
 
 ## Acessando o front-end
 

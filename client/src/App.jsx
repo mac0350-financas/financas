@@ -12,7 +12,7 @@ import PaginaReceitas from './pages/PaginaReceitas';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/landing" element={<LandingPage />} />
       <Route path="/configuracoes-conta" element={<PaginaConfiguracoesConta />} />
       <Route path="/criar-conta" element={<PaginaCriarConta />} />
       <Route path="/fazer-login" element={<PaginaFazerLogin />} />

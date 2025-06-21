@@ -4,7 +4,7 @@ import { cores } from '../themes/temas';
 
 const Header = () => {
   return (
-    <Box sx={{ backgroundColor: cores.fundoPrimario, pt: 2, px: 3 }}>
+    <Box sx={{ backgroundColor: cores.fundoBranco, pt: 2, px: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', height: 40 }}>
         <img
           src="/logo-finature.png"
