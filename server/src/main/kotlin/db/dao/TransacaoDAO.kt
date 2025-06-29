@@ -14,12 +14,14 @@ class TransacaoDAO(id: EntityID<Int>) : IntEntity(id) {
     var valor by TransacaoTable.valor
     var tipoId by TransacaoTable.tipoId
     var categoria by TransacaoTable.categoria
+    var descricao by TransacaoTable.descricao
 
     fun toDTO() = TransacaoDTO(
         usuarioId = usuarioId.value, 
         data = data,
         valor = valor,
         tipoId = tipoId.value,
+        descricao = descricao,
         categoria = categoria
     )
 }
