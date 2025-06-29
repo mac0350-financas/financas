@@ -8,5 +8,5 @@ data class TransacaoDTO(
     val tipoId: Int,
     val categoria: String,
     val descricao: String,
-    val usuarioId: Int
+    val usuarioId: Int? = null
 )

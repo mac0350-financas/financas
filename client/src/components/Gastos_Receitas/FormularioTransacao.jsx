@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, MenuItem, FormControl, FormGroup } from '@mui/material';
+import { TextField, Button, MenuItem, FormControl, FormGroup, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledTextField = styled(TextField)({
@@ -47,7 +47,7 @@ const categorias = ['🍽️ Alimentação', '🚗 Transporte', '🩺 Saúde', '
                     '👚 Vestuário', '💼 Negócios', '💸 Dívidas', '📈 Investimentos', '💝 Doação e presente', 
                      '🐶 Pets', '✨ Outros'];
 
-const FormularioTransacao = ({ tipo, onSubmit, onClose }) => {
+function FormularioTransacao(tipo) {
   const [formData, setFormData] = useState({
     data: '',
     descricao: '',
@@ -55,18 +55,91 @@ const FormularioTransacao = ({ tipo, onSubmit, onClose }) => {
     valor: ''
   });
 
+  const tipoTransacaoId = tipo.tipo === 'gasto' ? -1 : 1;
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const validateForm = () => {
+    if (!formData.data.trim()) {
+        setError('Data é obrigatória');
+        return false;
+    }
+    if (!formData.descricao.trim()) {
+        setError('Descrição é obrigatória');
+        return false;
+    }
+    if (!formData.categoria.trim()) {
+        setError('Categoria é obrigatória');
+        return false;
+    }
+    if (!formData.valor.trim()) {
+      setError('Valor é obrigatório');
+      return false;
+    }
+    return true;
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess(false);
+
+    if (!validateForm()) return;
+    
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8080/formulario-transacao', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+              data: formData.data,
+              descricao: formData.descricao,
+              categoria: formData.categoria,
+              valor: formData.valor,
+              tipoId: tipoTransacaoId,
+              usuarioId: null
+          }),
+      });
+
+      if (response.ok) {
+          console.log('Formulário enviado com sucesso');
+          setSuccess(true);
+          setFormData({ data: '', descricao: '', categoria: '', valor: '' });
+      } 
+      else {
+          const data = await response.json();
+          throw new Error(data.message || 'Erro ao salvar transação');
+      }
+
+  } 
+  
+  catch (error) {
+      console.error('Erro:', error);
+      setError(error.message || 'Erro de conexão. Tente novamente.');
+  } 
+  
+  finally {
+      setLoading(false);
+  }
+
+};
 
   return (
     <FormControl component="form" onSubmit={handleSubmit} fullWidth>
+      {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '1024px' }}>{error}</Alert>}
+      {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '1024px' }}>Transação salva com sucesso!</Alert>}
       <StyledForm>
         <StyledTextField
           label="Data"
@@ -106,8 +179,8 @@ const FormularioTransacao = ({ tipo, onSubmit, onClose }) => {
           onChange={handleChange}
           fullWidth
         />
-        <StyledButton type="submit" variant="contained" color="primary">
-          Salvar {tipo}
+        <StyledButton type="submit" variant="contained" disabled={loading}>
+          {loading ? 'SALVANDO ' + tipo.tipo.toUpperCase() : 'SALVAR ' + tipo.tipo.toUpperCase()}
         </StyledButton>
       </StyledForm>
     </FormControl>

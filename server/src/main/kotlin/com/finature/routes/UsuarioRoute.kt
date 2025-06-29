@@ -51,7 +51,7 @@ fun Route.usuarioRoute() {
                 email = request.email,
                 senha = request.senha
             )
-            call.sessions.set(UsuarioSessao(usuario.nome, usuario.email))
+            call.sessions.set(UsuarioSessao(usuario.id, usuario.nome, usuario.email))
             call.respond(HttpStatusCode.OK, mapOf("message" to "Login realizado com sucesso"))
         } 
         

@@ -52,11 +52,6 @@ const BotaoInserirTransacao = ({ texto, tipo }) => {
     setFormAberto(true);
   };
 
-  const handleSubmit = (formData) => {
-    console.log('Dados enviados:', formData);
-    setFormAberto(false);
-  };
-
   return (
     <>
       <StyledButton
@@ -77,8 +72,6 @@ const BotaoInserirTransacao = ({ texto, tipo }) => {
           <StyledDialogContent>
             <FormularioTransacao
               tipo={tipo}
-              onSubmit={handleSubmit}
-              onClose={() => setFormAberto(false)}
             />
           </StyledDialogContent>
           <StyledDialogActions>
