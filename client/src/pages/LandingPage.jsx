@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Typography, Button, Container, Grid, Paper } from '@mui/material';
-import Carousel from 'react-material-ui-carousel';
+// import Carousel from 'react-material-ui-carousel';
 import { styled } from '@mui/system';
 import { cores, titulo } from '../themes/temas';
 import HeaderEscura from '../components/HeaderEscura';
@@ -38,56 +38,56 @@ const CarrosselItem = ({ title, description }) => (
 );
 
 // Componente do carrossel funcional
-const Carrossel = () => {
-  const funcionalidades = [
-    {
-      title: 'Controle de Gastos',
-      description: 'Monitore suas despesas e receitas de forma simples e intuitiva',
-    },
-    {
-      title: 'Metas Mensais',
-      description: 'Defina limites de gasto e acompanhe seu progresso em tempo real',
-    },
-    {
-      title: 'Investimentos CDI',
-      description: 'Faça simulações rápidas e acompanhe seus rendimentos',
-    },
-  ];
+// const Carrossel = () => {
+//   const funcionalidades = [
+//     {
+//       title: 'Controle de Gastos',
+//       description: 'Monitore suas despesas e receitas de forma simples e intuitiva',
+//     },
+//     {
+//       title: 'Metas Mensais',
+//       description: 'Defina limites de gasto e acompanhe seu progresso em tempo real',
+//     },
+//     {
+//       title: 'Investimentos CDI',
+//       description: 'Faça simulações rápidas e acompanhe seus rendimentos',
+//     },
+//   ];
 
-  return (
-    <Box sx={{ 
-      width: '100%',
-      maxWidth: '800px',
-      padding: '20px',
-      alignItems: 'center'
-    }}>
-      <Typography 
-        variant="h4" 
-        textAlign="center" 
-        sx={{ 
-          color: '#2F404A',
-          fontWeight: 'bold',
-          mb: 4 
-        }}
-      >
-        Funcionalidades da Finature
-      </Typography>
-      <Carousel
-        autoPlay={true}
-        indicators={true}
-        navButtonsAlwaysVisible={true}
-        animation="slide"
-        duration={500}
-        interval={4000}
-        alignItems="center"
-      >
-        {funcionalidades.map((item, i) => (
-          <CarrosselItem key={i} {...item} />
-        ))}
-      </Carousel>
-    </Box>
-  );
-};
+//   return (
+//     <Box sx={{ 
+//       width: '100%',
+//       maxWidth: '800px',
+//       padding: '20px',
+//       alignItems: 'center'
+//     }}>
+//       <Typography 
+//         variant="h4" 
+//         textAlign="center" 
+//         sx={{ 
+//           color: '#2F404A',
+//           fontWeight: 'bold',
+//           mb: 4 
+//         }}
+//       >
+//         Funcionalidades da Finature
+//       </Typography>
+//       <Carousel
+//         autoPlay={true}
+//         indicators={true}
+//         navButtonsAlwaysVisible={true}
+//         animation="slide"
+//         duration={500}
+//         interval={4000}
+//         alignItems="center"
+//       >
+//         {funcionalidades.map((item, i) => (
+//           <CarrosselItem key={i} {...item} />
+//         ))}
+//       </Carousel>
+//     </Box>
+//   );
+// };
 
 const MainContainer = styled('div')({
   display: 'flex',
@@ -283,11 +283,10 @@ function LandingPage() {
           </MetadeDireita>
       </Conteudo>
       
-      <SecaoInferior id="carrossel-section">
+      {/* <SecaoInferior id="carrossel-section">
         <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Carrossel />
         </Container>
-      </SecaoInferior>
+      </SecaoInferior> */}
     </MainContainer>
   );
 }
