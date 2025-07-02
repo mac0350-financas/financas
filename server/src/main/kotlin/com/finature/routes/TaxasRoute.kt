@@ -3,6 +3,7 @@ package com.finature.routes
 
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationResponse
+import com.finature.models.SimulationResponseWithDetails
 import com.finature.service.InvestCalcService
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
@@ -82,16 +83,24 @@ fun Route.taxaRoutes() {
                 println("Selic Anual: $selicAnual")
                 
                 val trMensalPoupanca = fetchSerie(codTRPoupanca) // TR mensal já em fração
-                println("TR Mensal Poupança: $trMensalPoupanca")
+                println("TR Mensal Poupanca: $trMensalPoupanca")
                 
                 // Converter TR mensal para anual
                 val poupancaAnual = InvestCalcService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
-                
                 // Calcular simulações usando o service
                 val dadosPoupanca = InvestCalcService.simularInvestimento(request, poupancaAnual)
                 val dadosSelic = InvestCalcService.simularInvestimento(request, selicAnual)
                 
-                call.respond(SimulationResponse(dadosPoupanca, dadosSelic))
+                // Calcular detalhes
+                val detalhesPoupanca = InvestCalcService.calcularDetalhes(request, dadosPoupanca, isPoupanca = true)
+                val detalhesSelic = InvestCalcService.calcularDetalhes(request, dadosSelic, isPoupanca = false)
+                
+                call.respond(SimulationResponseWithDetails(
+                    poupanca = dadosPoupanca,
+                    selic = dadosSelic,
+                    detalhesPoupanca = detalhesPoupanca,
+                    detalhesSelic = detalhesSelic
+                ))
             } catch (e: Exception) {
                 println("Erro na simulação: ${e.message}")
                 e.printStackTrace()
