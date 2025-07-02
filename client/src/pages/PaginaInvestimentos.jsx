@@ -125,7 +125,8 @@ function PaginaInvestimentos() {
     try {
       setErro(null);
       setCarregandoSimulacao(true);
-      const response = await axios.post("http://localhost:8080/api/taxas/simular", valores, { headers: { "Content-Type": "application/json", Accept: "application/json" } });
+      const response = await axios.post("http://localhost:8080/api/taxas/simular", valores, 
+          { headers: { "Content-Type": "application/json", Accept: "application/json" } });
       if (response.data.error) throw new Error(response.data.error);
       setDadosPoupanca(response.data.poupanca);
       setDadosSelic(response.data.selic);
