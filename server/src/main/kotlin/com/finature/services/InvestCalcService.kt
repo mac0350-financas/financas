@@ -13,11 +13,11 @@ object InvestCalcService {
         (1 + taxaMensal).pow(12.0) - 1
     
     /** Calcula a taxa anual da poupança considerando a SELIC.
-     *  Se a SELIC for maior que 8,5%, a taxa é de 0,5% ao mês.
+     *  Se a SELIC > 8,5%, a taxa é de 0,5% ao mês + TR(taxa referncial mensal).
      *  Caso contrário, a taxa é 70% da SELIC anual.
      */
-    fun calcularPoupancaAnual(selicAnual: Double): Double =
-        if (selicAnual > 0.085) mensalParaAnual(0.5/100) else selicAnual*0.70
+    fun calcularPoupancaAnual(selicAnual: Double, tr: Double): Double =
+        if (selicAnual > 0.085) mensalParaAnual(tr+(0.5)/100) else selicAnual*0.70
     
     fun simularInvestimento(
         request: SimulationRequest,
