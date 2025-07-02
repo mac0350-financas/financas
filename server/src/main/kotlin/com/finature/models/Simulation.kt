@@ -15,5 +15,13 @@ data class SimulationPoint(val mes: Int, val valor: Double)
 @Serializable
 data class SimulationResponse(
     val poupanca: List<SimulationPoint>,
-    val selic: List<SimulationPoint>
+    val selic: List<SimulationPoint>,
+)
+
+@Serializable
+data class SimulationResponseWithDetails(
+    val poupanca: List<SimulationPoint>,
+    val selic: List<SimulationPoint>,
+    val detalhesPoupanca: Investmento,
+    val detalhesSelic: Investmento
 )

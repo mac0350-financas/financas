@@ -8,7 +8,8 @@ const cores = {
     botaoPrimario: 'rgba(109, 122, 130, 0.5)',
     botaoHover: '#D9D9D9',
     cinzaClaro: '#C4D1D8',
-    cinzaMedio: '#A0B0B9', // Adicionando o cinza médio
+    cinzaMedio: '#A0B0B9',
+    corPrincipal: '#2F404A'
 };
 
 const titulo = {
