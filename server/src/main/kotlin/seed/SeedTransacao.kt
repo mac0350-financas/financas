@@ -19,6 +19,7 @@ fun seedTransacao() {
             this.valor = faker.number().randomDouble(2, 10, 1000)            
             this.tipoId = tipoTransacao.id
             this.categoria = faker.lorem().sentence(3)
+            this.descricao = faker.lorem().sentence(3)
             this.usuarioId = usuario.id        }
     }
 }
