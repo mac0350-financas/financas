@@ -44,13 +44,9 @@ suspend fun fetchSerie(codigo: Int): Double {
     val url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.$codigo/" +
               "dados?formato=json&dataInicial=$dataStr&dataFinal=$dataStr"
 
-    // 4. baixa JSON (IO dispatcher)
     val json = withContext(Dispatchers.IO) { URL(url).readText() }
-
-    // 5. extrai campo valor (string) → Double
     val jsonElement = Json.parseToJsonElement(json)
     
-    // Verificar se é um array ou objeto com erro
     val jsonArray = when {
         jsonElement is JsonArray -> jsonElement
         jsonElement is JsonObject && jsonElement.containsKey("erro") -> {
@@ -64,7 +60,8 @@ suspend fun fetchSerie(codigo: Int): Double {
 
     require(jsonArray.isNotEmpty()) { "Série vazia para $dataStr" }
 
-    val percentualStr = jsonArray[0].jsonObject["valor"]!!.jsonPrimitive.content.replace(',', '.')
+    val ultimoItem = jsonArray.last()
+    val percentualStr = ultimoItem.jsonObject["valor"]!!.jsonPrimitive.content.replace(',', '.')
     val taxaFracao = percentualStr.toDouble() / 100.0
 
     cache[key] = now to taxaFracao
@@ -79,8 +76,16 @@ fun Route.taxaRoutes() {
                 
                 // Buscar taxas via API do BCB
                 val codSelic = 1178 // Código da série Selic no SGS do Bacen
+                val codTRPoupanca = 226 // Código da série TR mensal da Poupança
+                
                 val selicAnual = fetchSerie(codSelic)
-                val poupancaAnual = InvestCalcService.calcularPoupancaAnual(selicAnual)
+                println("Selic Anual: $selicAnual")
+                
+                val trMensalPoupanca = fetchSerie(codTRPoupanca) // TR mensal já em fração
+                println("TR Mensal Poupança: $trMensalPoupanca")
+                
+                // Converter TR mensal para anual
+                val poupancaAnual = InvestCalcService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
                 
                 // Calcular simulações usando o service
                 val dadosPoupanca = InvestCalcService.simularInvestimento(request, poupancaAnual)
