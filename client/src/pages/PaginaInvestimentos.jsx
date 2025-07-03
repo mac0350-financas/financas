@@ -24,13 +24,40 @@ import { LineChart } from "@mui/x-charts/LineChart";
 
 const InvestmentForm = ({ onSubmit, carregando }) => {
   const [form, setForm] = useState({ aporteInicial: "1000", aporteMensal: "500", tempoMeses: "120" });
-  const handleChange = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }));
+  const [erros, setErros] = useState({});
+  
+  const handleChange = (campo) => (e) => {
+    setForm((f) => ({ ...f, [campo]: e.target.value }));
+    // Limpar erro do campo quando o usuário digitar
+    if (erros[campo]) {
+      setErros((prev) => ({ ...prev, [campo]: null }));
+    }
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const dados = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, Number(v)]));
-    if (Object.values(dados).some((v) => Number.isNaN(v) || v < 0)) return alert("Insira números positivos");
+    const novosErros = {};
+    
+    if (dados.aporteInicial < 0) {
+      novosErros.aporteInicial = "Deve ser ≥ 0";
+    }
+    if (dados.aporteMensal < 0) {
+      novosErros.aporteMensal = "Deve ser ≥ 0";
+    }
+    if (dados.tempoMeses < 1 || dados.tempoMeses > 500) {
+      novosErros.tempoMeses = "Meses entre 1 e 500";
+    }
+    
+    if (Object.keys(novosErros).length > 0) {
+      setErros(novosErros);
+      return;
+    }
+    
+    setErros({});
     onSubmit(dados);
   };
+  
   return (
     <Paper sx={{ p: 3, backgroundColor: cores.fundoBranco, border: `1px solid ${cores.cinzaClaro}` }} elevation={4}>
       <Typography variant="h6" mb={2} fontWeight="bold" color={cores.fundoEscuro}>Parâmetros da simulação</Typography>
@@ -42,7 +69,17 @@ const InvestmentForm = ({ onSubmit, carregando }) => {
             { label: "Tempo (meses)", key: "tempoMeses", step: "1" },
           ].map(({ label, key, step }) => (
             <Grid item xs={12} md={4} key={key}>
-              <TextField label={label} fullWidth required value={form[key]} onChange={handleChange(key)} type="number" inputProps={{ min: 0, step: step }} />
+              <TextField 
+                label={label} 
+                fullWidth 
+                required 
+                value={form[key]} 
+                onChange={handleChange(key)} 
+                type="number" 
+                inputProps={{ step: step }}
+                error={!!erros[key]}
+                helperText={erros[key]}
+              />
             </Grid>
           ))}
           <Grid item xs={12}>
