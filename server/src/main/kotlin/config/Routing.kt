@@ -15,7 +15,7 @@ import org.slf4j.event.*
 import com.finature.routes.usuarioRoute
 
 import com.finature.routes.transacaoRoute
-import com.finature.routes.taxaRoutes
+import com.finature.routes.investimentoRoute
 
 fun Application.configureRouting() {
     
@@ -27,6 +27,6 @@ fun Application.configureRouting() {
 
         usuarioRoute()
         transacaoRoute()
-        taxaRoutes()
+        investimentoRoute()
     }
 }

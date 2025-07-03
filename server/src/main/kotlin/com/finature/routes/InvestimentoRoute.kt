@@ -22,10 +22,22 @@ private val DF      = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
 /** Retorna o último dia útil anterior (apenas considera fins de semana) */
 private fun ultimoDiaUtilAnterior(ref: LocalDate = LocalDate.now(BR_ZONE)): LocalDate {
-    var data = ref.minusDays(1)
+    val agora = LocalDateTime.now(BR_ZONE)
+    val horaPublicacao = LocalTime.of(9, 1) // 9:01 AM
+    
+    // Antes das 9:00 AM o Bacen ainda não publicou os dados do dia
+    val dataReferencia = if (agora.toLocalTime().isBefore(horaPublicacao)) {
+        ref.minusDays(2)
+    } else {
+        ref.minusDays(1)
+    }
+    
+    var data = dataReferencia
     while (data.dayOfWeek == DayOfWeek.SATURDAY || data.dayOfWeek == DayOfWeek.SUNDAY) {
         data = data.minusDays(1)
     }
+    
+    println("Horário atual: ${agora.toLocalTime()}, usando data: $data")
     return data
 }
 
@@ -35,9 +47,15 @@ suspend fun fetchSerie(codigo: Int): Double {
 
     // cache TTL 24 h
     cache[key]?.let { (ts, v) ->
-        if (Duration.between(ts, now).toHours() < 24) return v
+        if (Duration.between(ts, now).toHours() < 24) {
+            println("Cache hit para série $codigo: $v (${Duration.between(ts, now).toHours()}h)")
+            return v
+        } else {
+            println("Cache expired para série $codigo (${Duration.between(ts, now).toHours()}h)")
+        }
     }
-
+    println("Cache MISS para série $codigo - fazendo requisição à API BCB")
+    
     val dia = ultimoDiaUtilAnterior()
     val dataStr = DF.format(dia)
 
@@ -65,11 +83,12 @@ suspend fun fetchSerie(codigo: Int): Double {
     val taxaFracao = percentualStr.toDouble() / 100.0
 
     cache[key] = now to taxaFracao
+    println("Cache STORED para série $codigo: $taxaFracao")
     return taxaFracao
 }
 
-fun Route.taxaRoutes() {
-    route("/api/taxas") {
+fun Route.investimentoRoute() {
+    route("/api/investimento") {
         post("/simular") {
             try {
                 val request = call.receive<SimulationRequest>()
@@ -84,9 +103,7 @@ fun Route.taxaRoutes() {
                 val trMensalPoupanca = fetchSerie(codTRPoupanca) // TR mensal já em fração
                 println("TR Mensal Poupanca: $trMensalPoupanca")
                 
-                // Converter TR mensal para anual
                 val poupancaAnual = InvestCalcService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
-                // Calcular simulações usando o service
                 val dadosPoupanca = InvestCalcService.simularInvestimento(request, poupancaAnual)
                 val dadosSelic = InvestCalcService.simularInvestimento(request, selicAnual)
                 

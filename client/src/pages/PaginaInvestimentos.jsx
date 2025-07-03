@@ -37,12 +37,12 @@ const InvestmentForm = ({ onSubmit, carregando }) => {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           {[
-            { label: "Aporte inicial (R$)", key: "aporteInicial" },
-            { label: "Aporte mensal (R$)", key: "aporteMensal" },
-            { label: "Tempo (meses)", key: "tempoMeses" },
-          ].map(({ label, key }) => (
+            { label: "Aporte inicial (R$)", key: "aporteInicial", step: "0.01" },
+            { label: "Aporte mensal (R$)", key: "aporteMensal", step: "0.01" },
+            { label: "Tempo (meses)", key: "tempoMeses", step: "1" },
+          ].map(({ label, key, step }) => (
             <Grid item xs={12} md={4} key={key}>
-              <TextField label={label} fullWidth required value={form[key]} onChange={handleChange(key)} type="number" inputProps={{ min: 0, step: "0.01" }} />
+              <TextField label={label} fullWidth required value={form[key]} onChange={handleChange(key)} type="number" inputProps={{ min: 0, step: step }} />
             </Grid>
           ))}
           <Grid item xs={12}>
@@ -276,7 +276,7 @@ function PaginaInvestimentos() {
     try {
       setErro(null);
       setCarregandoSimulacao(true);
-      const response = await axios.post("http://localhost:8080/api/taxas/simular", valores, 
+      const response = await axios.post("http://localhost:8080/api/investimento/simular", valores, 
           { headers: { "Content-Type": "application/json", Accept: "application/json" } });
       
       console.log("Resposta completa:", response.data);
