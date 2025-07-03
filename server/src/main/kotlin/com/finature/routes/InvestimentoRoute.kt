@@ -3,7 +3,7 @@ package com.finature.routes
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationResponse
 import com.finature.models.SimulationResponseWithDetails
-import com.finature.service.InvestCalcService
+import com.finature.service.InvestimentoService
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -103,13 +103,13 @@ fun Route.investimentoRoute() {
                 val trMensalPoupanca = fetchSerie(codTRPoupanca) // TR mensal já em fração
                 println("TR Mensal Poupanca: $trMensalPoupanca")
                 
-                val poupancaAnual = InvestCalcService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
-                val dadosPoupanca = InvestCalcService.simularInvestimento(request, poupancaAnual)
-                val dadosSelic = InvestCalcService.simularInvestimento(request, selicAnual)
+                val poupancaAnual = InvestimentoService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
+                val dadosPoupanca = InvestimentoService.simularInvestimento(request, poupancaAnual)
+                val dadosSelic = InvestimentoService.simularInvestimento(request, selicAnual)
                 
                 // Calcular detalhes
-                val detalhesPoupanca = InvestCalcService.calcularDetalhes(request, dadosPoupanca, isPoupanca = true)
-                val detalhesSelic = InvestCalcService.calcularDetalhes(request, dadosSelic, isPoupanca = false)
+                val detalhesPoupanca = InvestimentoService.calcularDetalhes(request, dadosPoupanca, isPoupanca = true)
+                val detalhesSelic = InvestimentoService.calcularDetalhes(request, dadosSelic, isPoupanca = false)
                 
                 call.respond(SimulationResponseWithDetails(
                     poupanca = dadosPoupanca,

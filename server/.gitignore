@@ -34,3 +34,23 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Package files ###
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Log files ###
+*.log
+
+### OS generated files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
