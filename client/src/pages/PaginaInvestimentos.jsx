@@ -1,296 +1,18 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import HeaderComMenu from "../components/HeaderComMenu";
-import { cores, espacamento, bordas } from "../themes/temas";
+import FormularioTransacao from "../components/Investimentos/FormularioTransacao";
+import BlocoTotalTransacao from "../components/Investimentos/BlocoTotalTransacao";
+import HeaderBotaoConta from "../components/Investimentos/HeaderBotaoConta";
+import HeaderBotaoPaginas from "../components/Investimentos/HeaderBotaoPaginas";
+import { cores, espacamento } from "../themes/temas";
 import {
   Box,
   Grid,
-  TextField,
-  Button,
   Typography,
   Paper,
-  CircularProgress,
-  Card,
-  CardContent,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from "@mui/material";
-import { LineChart } from "@mui/x-charts/LineChart";
-
-const InvestmentForm = ({ onSubmit, carregando }) => {
-  const [form, setForm] = useState({ aporteInicial: "1000", aporteMensal: "500", tempoMeses: "120" });
-  const [erros, setErros] = useState({});
-  
-  const handleChange = (campo) => (e) => {
-    setForm((f) => ({ ...f, [campo]: e.target.value }));
-    // Limpar erro do campo quando o usuário digitar
-    if (erros[campo]) {
-      setErros((prev) => ({ ...prev, [campo]: null }));
-    }
-  };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const dados = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, Number(v)]));
-    const novosErros = {};
-    
-    if (dados.aporteInicial < 0) {
-      novosErros.aporteInicial = "Deve ser ≥ 0";
-    }
-    if (dados.aporteMensal < 0) {
-      novosErros.aporteMensal = "Deve ser ≥ 0";
-    }
-    if (dados.tempoMeses < 1 || dados.tempoMeses > 500) {
-      novosErros.tempoMeses = "Meses entre 1 e 500";
-    }
-    
-    if (Object.keys(novosErros).length > 0) {
-      setErros(novosErros);
-      return;
-    }
-    
-    setErros({});
-    onSubmit(dados);
-  };
-  
-  return (
-    <Paper sx={{ p: 3, backgroundColor: cores.fundoBranco, border: `1px solid ${cores.cinzaClaro}` }} elevation={4}>
-      <Typography variant="h6" mb={2} fontWeight="bold" color={cores.fundoEscuro}>Parâmetros da simulação</Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {[
-            { label: "Aporte inicial (R$)", key: "aporteInicial", step: "0.01" },
-            { label: "Aporte mensal (R$)", key: "aporteMensal", step: "0.01" },
-            { label: "Tempo (meses)", key: "tempoMeses", step: "1" },
-          ].map(({ label, key, step }) => (
-            <Grid item xs={12} md={4} key={key}>
-              <TextField 
-                label={label} 
-                fullWidth 
-                required 
-                value={form[key]} 
-                onChange={handleChange(key)} 
-                type="number" 
-                inputProps={{ step: step }}
-                error={!!erros[key]}
-                helperText={erros[key]}
-              />
-            </Grid>
-          ))}
-          <Grid item xs={12}>
-            <Button 
-              variant="contained" 
-              type="submit" 
-              disabled={carregando} 
-              fullWidth
-              sx={{
-                backgroundColor: cores.fundoEscuro,
-                color: cores.fundoBranco,
-                '&:hover': {
-                  backgroundColor: cores.corPrincipal,
-                },
-                '&:disabled': {
-                  backgroundColor: cores.cinzaClaro,
-                },
-                borderRadius: bordas.raioPadrao,
-              }}
-            >
-              {carregando ? <CircularProgress size={24} color="inherit" /> : "Simular"}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Paper>
-  );
-};
-
-const InvestmentCharts = ({ dadosPoupanca, dadosSelic }) => {
-  if (!dadosPoupanca.length || !dadosSelic.length) return null;
-  const maiorMes = Math.max(dadosPoupanca.at(-1).mes, dadosSelic.at(-1).mes);
-  const xData = Array.from({ length: maiorMes + 1 }, (_, i) => i);
-  const seriesPoup = xData.map((mes) => dadosPoupanca.find((d) => d.mes === mes)?.valor ?? null);
-  const seriesSelic = xData.map((mes) => dadosSelic.find((d) => d.mes === mes)?.valor ?? null);
-  return (
-    <Paper sx={{ p: 3, flexGrow: 1, backgroundColor: cores.fundoBranco, border: `1px solid ${cores.cinzaClaro}` }} elevation={4}>
-      <Typography variant="h6" mb={2} fontWeight="bold" color={cores.fundoEscuro}>Crescimento do patrimônio</Typography>
-      <Box sx={{ width: "100%" }}>
-        <LineChart
-          xAxis={[{ label: "Mês", data: xData }]}
-          yAxis={[{ min: 0 }]}
-          series={[
-            { label: "Poupança", data: seriesPoup, color: "#FF6B35" },
-            { label: "Selic", data: seriesSelic, color: "#1976D2" },
-          ]}
-          height={400}
-        />
-      </Box>
-    </Paper>
-  );
-};
-
-const SummaryBox = ({ dadosPoupanca, dadosSelic, onVerDetalhes }) => {
-  if (!dadosPoupanca.length || !dadosSelic.length) return null;
-  const totalPoup = dadosPoupanca.at(-1)?.valor || 0;
-  const totalSelic = dadosSelic.at(-1)?.valor || 0;
-  return (
-    <Card
-      elevation={4}
-      sx={{
-        flexShrink: 0,
-        minWidth: 260,
-        flexBasis: { xs: "100%", md: 280 },
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        p: 3,
-        height: "100%",
-        backgroundColor: cores.corPrincipal,
-        border: `1px solid ${cores.cinzaClaro}`,
-        borderRadius: bordas.raioPadrao,
-      }}
-    >
-      <CardContent sx={{ p: 0, width: "100%" }}>
-        <Typography variant="h6" fontWeight="bold" gutterBottom color={cores.fundoBranco}>
-          Seu dinheiro total será:
-        </Typography>
-        <Typography sx={{ mb: 0.5, color: cores.fundoBranco }}>
-          • Selic:&nbsp;
-          <Box component="span" fontWeight="bold" color={cores.fundoBranco}>
-            {totalSelic.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-          </Box>
-        </Typography>
-        <Typography sx={{ mb: 2, color: cores.fundoBranco }}>
-          • Poupança:&nbsp;
-          <Box component="span" fontWeight="bold" color={cores.fundoBranco}>
-            {totalPoup.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-          </Box>
-        </Typography>
-        <Button
-          variant="outlined"
-          onClick={onVerDetalhes}
-          fullWidth
-          sx={{
-            mt: 2,
-            borderRadius: bordas.raioPadrao,
-            textTransform: "none",
-            fontWeight: "medium",
-            borderColor: cores.fundoBranco,
-            color: cores.fundoBranco,
-            '&:hover': {
-              borderColor: cores.cinzaClaro,
-              backgroundColor: cores.botaoHover,
-              color: cores.fundoEscuro,
-            }
-          }}
-        >
-          Ver detalhes
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const DetailTable = ({ detalhesPoupanca, detalhesSelic }) => {
-  console.log("Detalhes Poupança:", detalhesPoupanca);
-  console.log("Detalhes Selic:", detalhesSelic);
-  
-  if (!detalhesPoupanca || !detalhesSelic) return null;
-
-  const formatarMoeda = (valor) => 
-    valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  
-  const formatarPercentual = (valor) => 
-    (valor * 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
-
-  const rows = [
-    { 
-      label: "Valor bruto acumulado", 
-      selic: formatarMoeda(detalhesSelic.valorBruto),
-      poupanca: formatarMoeda(detalhesPoupanca.valorBruto)
-    },
-    { 
-      label: "Rentabilidade bruta", 
-      selic: formatarPercentual(detalhesSelic.rentabilidadeBruta),
-      poupanca: formatarPercentual(detalhesPoupanca.rentabilidadeBruta)
-    },
-    { 
-      label: "Valor pago em IR", 
-      selic: formatarMoeda(detalhesSelic.valorIR),
-      poupanca: formatarMoeda(detalhesPoupanca.valorIR)
-    },
-    { 
-      label: "Valor líquido acumulado", 
-      selic: formatarMoeda(detalhesSelic.valorLiquido),
-      poupanca: formatarMoeda(detalhesPoupanca.valorLiquido)
-    },
-    { 
-      label: "Rentabilidade líquida", 
-      selic: formatarPercentual(detalhesSelic.rentabilidadeLiquida),
-      poupanca: formatarPercentual(detalhesPoupanca.rentabilidadeLiquida)
-    },
-    { 
-      label: "Ganho líquido", 
-      selic: formatarMoeda(detalhesSelic.ganhoLiquido),
-      poupanca: formatarMoeda(detalhesPoupanca.ganhoLiquido),
-      highlight: true 
-    },
-  ];
-
-  return (
-    <Paper elevation={4} sx={{ backgroundColor: cores.fundoBranco, border: `1px solid ${cores.cinzaClaro}` }}>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: cores.fundoEscuro }}>
-              <TableCell sx={{ color: cores.fundoBranco, fontWeight: "bold", py: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold"></Typography>
-              </TableCell>
-              <TableCell align="center" sx={{ color: cores.fundoBranco, fontWeight: "bold", py: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold">Tesouro Selic</Typography>
-              </TableCell>
-              <TableCell align="center" sx={{ color: cores.fundoBranco, fontWeight: "bold", py: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold">Poupança</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(({ label, selic, poupanca, highlight }) => (
-              <TableRow 
-                key={label} 
-                sx={{ 
-                  backgroundColor: highlight ? cores.fundoSecundario : cores.fundoBranco,
-                  "&:hover": { backgroundColor: highlight ? cores.botaoHover : cores.fundoSecundario }
-                }}
-              >
-                <TableCell sx={{ fontWeight: "medium", py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "medium"} color={cores.fundoEscuro}>
-                    {label}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center" sx={{ py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro}>
-                    {selic}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center" sx={{ py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro}>
-                    {poupanca}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
-  );
-};
 
 function PaginaInvestimentos() {
   const [dadosPoupanca, setDadosPoupanca] = useState([]);
@@ -339,7 +61,7 @@ function PaginaInvestimentos() {
         <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>Simulador de Investimentos</Typography>
         <Grid container direction="column" spacing={4}>
           <Grid item xs={12}>
-            <InvestmentForm onSubmit={handleSimular} carregando={carregandoSimulacao} />
+            <FormularioTransacao onSubmit={handleSimular} carregando={carregandoSimulacao} />
           </Grid>
           {erro && (
             <Grid item xs={12}>
@@ -350,12 +72,12 @@ function PaginaInvestimentos() {
           )}
           <Grid item xs={12}>
             <Stack direction={{ xs: "column", md: "row" }} spacing={4} alignItems="stretch" sx={{ width: "100%" }}>
-              <InvestmentCharts dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} />
-              <SummaryBox dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} onVerDetalhes={scrollToDetails} />
+              <BlocoTotalTransacao dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} />
+              <HeaderBotaoConta dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} onVerDetalhes={scrollToDetails} />
             </Stack>
           </Grid>
           <Grid item xs={12} ref={detailTableRef}>
-            <DetailTable detalhesPoupanca={detalhesPoupanca} detalhesSelic={detalhesSelic} />
+            <HeaderBotaoPaginas detalhesPoupanca={detalhesPoupanca} detalhesSelic={detalhesSelic} />
           </Grid>
         </Grid>
       </Box>
