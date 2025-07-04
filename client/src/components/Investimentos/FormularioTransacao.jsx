@@ -25,11 +25,11 @@ const FormularioTransacao = ({ onSubmit, carregando }) => {
     const dados = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, Number(v)]));
     const novosErros = {};
     
-    if (dados.aporteInicial < 0) {
-      novosErros.aporteInicial = "Deve ser ≥ 0";
+    if (dados.aporteInicial < 1) {
+      novosErros.aporteInicial = "Deve ser ≥ 1";
     }
-    if (dados.aporteMensal < 0) {
-      novosErros.aporteMensal = "Deve ser ≥ 0";
+    if (dados.aporteMensal < 1) {
+      novosErros.aporteMensal = "Deve ser ≥ 1";
     }
     if (dados.tempoMeses < 1 || dados.tempoMeses > 500) {
       novosErros.tempoMeses = "Meses entre 1 e 500";
