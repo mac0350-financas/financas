@@ -4,6 +4,8 @@ import com.finature.models.SimulationRequest
 import com.finature.models.SimulationResponse
 import com.finature.models.SimulationResponseWithDetails
 import com.finature.service.InvestimentoService
+import io.ktor.server.plugins.BadRequestException
+import kotlinx.serialization.SerializationException
 import io.ktor.server.routing.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -11,6 +13,7 @@ import io.ktor.server.request.*
 import kotlinx.serialization.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import io.ktor.http.*
 import java.net.URL
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -87,40 +90,47 @@ suspend fun fetchSerie(codigo: Int): Double {
     return taxaFracao
 }
 
-fun Route.investimentoRoute() {
+fun Route.investimentoRoute(
+    /** permite injeção de stub nos testes  */
+    fetchSerieFn: suspend (Int) -> Double = ::fetchSerie
+) {
     route("/api/investimento") {
         post("/simular") {
             try {
-                val request = call.receive<SimulationRequest>()
-                
-                // Buscar taxas via API do BCB
-                val codSelic = 1178 // Código da série Selic no SGS do Bacen
-                val codTRPoupanca = 226 // Código da série TR mensal da Poupança
-                
-                val selicAnual = fetchSerie(codSelic)
-                println("Selic Anual: $selicAnual")
-                
-                val trMensalPoupanca = fetchSerie(codTRPoupanca) // TR mensal já em fração
-                println("TR Mensal Poupanca: $trMensalPoupanca")
-                
-                val poupancaAnual = InvestimentoService.calcularPoupancaAnual(selicAnual,trMensalPoupanca)
-                val dadosPoupanca = InvestimentoService.simularInvestimento(request, poupancaAnual)
-                val dadosSelic = InvestimentoService.simularInvestimento(request, selicAnual)
-                
-                // Calcular detalhes
-                val detalhesPoupanca = InvestimentoService.calcularDetalhes(request, dadosPoupanca, isPoupanca = true)
-                val detalhesSelic = InvestimentoService.calcularDetalhes(request, dadosSelic, isPoupanca = false)
-                
-                call.respond(SimulationResponseWithDetails(
-                    poupanca = dadosPoupanca,
-                    selic = dadosSelic,
-                    detalhesPoupanca = detalhesPoupanca,
-                    detalhesSelic = detalhesSelic
-                ))
-            } catch (e: Exception) {
-                println("Erro na simulação: ${e.message}")
+                val req = call.receive<SimulationRequest>()
+
+                val selicAnual       = fetchSerieFn(1178)         // SELIC
+                val trMensalPoupanca = fetchSerieFn(226)          // TR
+
+                val poupancaAnual = InvestimentoService.calcularPoupancaAnual(
+                    selicAnual, trMensalPoupanca
+                )
+                val dadosPoupanca  = InvestimentoService.simularInvestimento(req, poupancaAnual)
+                val dadosSelic     = InvestimentoService.simularInvestimento(req, selicAnual)
+
+                call.respond(
+                    SimulationResponseWithDetails(
+                        poupanca         = dadosPoupanca,
+                        selic            = dadosSelic,
+                        detalhesPoupanca = InvestimentoService.calcularDetalhes(req, dadosPoupanca, true),
+                        detalhesSelic    = InvestimentoService.calcularDetalhes(req, dadosSelic,  false)
+                    )
+                )
+            }
+            /* ---------- validação / corpo inválido ---------- */
+            catch (e: BadRequestException) {
+                call.respond(HttpStatusCode.BadRequest,
+                    mapOf("error" to "Corpo JSON inválido: ${e.message}"))
+            }
+            catch (e: SerializationException) {   // JSON bem-formado mas campos faltando
+                call.respond(HttpStatusCode.BadRequest,
+                    mapOf("error" to "Campos ausentes ou tipos inválidos: ${e.message}"))
+            }
+            /* ---------- demais falhas (rede, cálculo…) -------- */
+            catch (e: Exception) {
                 e.printStackTrace()
-                call.respond(mapOf("error" to "Erro na simulação: ${e.message}"))
+                call.respond(HttpStatusCode.InternalServerError,
+                    mapOf("error" to "Erro na simulação: ${e.message}"))
             }
         }
     }
