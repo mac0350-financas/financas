@@ -9,5 +9,6 @@ object TransacaoTable : IntIdTable("transacoes") {
     val valor = double("valor")
     val tipoId = reference("tipo", TipoTransacaoTable)
     val categoria = varchar("categoria", 255)
+    val descricao = varchar("descricao", 255)
     val usuarioId = reference("usuario_id", UsuarioTable)
 }

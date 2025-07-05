@@ -14,6 +14,9 @@ import org.jetbrains.exposed.sql.*
 import org.slf4j.event.*
 import com.finature.routes.usuarioRoute
 
+import com.finature.routes.transacaoRoute
+import com.finature.routes.investimentoRoute
+
 fun Application.configureRouting() {
     
     routing {
@@ -23,5 +26,7 @@ fun Application.configureRouting() {
         }
 
         usuarioRoute()
+        transacaoRoute()
+        investimentoRoute()
     }
 }

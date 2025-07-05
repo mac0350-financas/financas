@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
+    id("jacoco") // para cobertura de testes
 }
 
 group = "com.finature"
@@ -19,7 +20,7 @@ repositories {
 }
 
 dependencies {
-
+    // Ktor e app
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.content.negotiation)
@@ -32,6 +33,7 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
     implementation("io.ktor:ktor-server-cors")
 
+    // Banco de dados e utilitários
     implementation("org.flywaydb:flyway-core:8.0.5")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.7")
     implementation("com.github.javafaker:javafaker:1.0.2")
@@ -41,8 +43,29 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
 
+    // Testes (Ktor + Kotlin + JUnit 5)
     testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.kotlin.test.junit)
-    //testImplementation("org.mariadb.jdbc:mariadb-java-client:3.3.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test") // funções de teste idiomáticas
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") // integração com JUnit 5
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+    
+    // Mockito para testes com mocks
+    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("io.mockk:mockk:1.13.9")
+}
 
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+    }
 }

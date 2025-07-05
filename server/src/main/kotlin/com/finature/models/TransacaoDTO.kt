@@ -7,5 +7,6 @@ data class TransacaoDTO(
     val valor: Double,
     val tipoId: Int,
     val categoria: String,
-    val usuarioId: Int
+    val descricao: String,
+    val usuarioId: Int? = null
 )
