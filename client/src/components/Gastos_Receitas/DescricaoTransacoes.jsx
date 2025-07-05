@@ -40,6 +40,8 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     borderRadius: '16px',
     maxWidth: '1024px',
     width: '1024px',
+    maxHeight: '600px',
+    overflowY: 'auto',
 }));
 
 function DescricaoTransacoes({ tipo, mes, ano }) {
