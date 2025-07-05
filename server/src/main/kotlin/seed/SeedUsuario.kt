@@ -23,7 +23,7 @@ fun seedUsuario() {
         UsuarioDAO.new {
             this.nome = "finature"
             this.email = "finature@finature.com"
-            this.senha = BCrypt.hashpw("finature", BCrypt.gensalt())
+            this.senha = "finature"
         }
 
     }
