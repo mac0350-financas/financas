@@ -13,7 +13,7 @@ const BlocoTotalTransacao = ({ dadosPoupanca, dadosSelic }) => {
   
   return (
     <Paper sx={{ p: 3, flexGrow: 1, backgroundColor: cores.fundoBranco, border: `1px solid ${cores.cinzaClaro}` }} elevation={4}>
-      <Typography variant="h6" mb={2} fontWeight="bold" color={cores.fundoEscuro}>Crescimento do patrimônio</Typography>
+      <Typography variant="h5" mb={2} fontWeight="bold" color={cores.fundoEscuro}>Crescimento do patrimônio</Typography>
       <Box sx={{ width: "100%" }}>
         <LineChart
           xAxis={[{ label: "Mês", data: xData }]}

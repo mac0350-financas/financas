@@ -21,20 +21,28 @@ function PaginaInvestimentos() {
   const [detalhesSelic, setDetalhesSelic] = useState(null);
   const [carregandoSimulacao, setCarregandoSimulacao] = useState(false);
   const [erro, setErro] = useState(null);
+  const [mostrarDetalhes, setMostrarDetalhes] = useState(false);
   
   const detailTableRef = useRef(null);
 
   const scrollToDetails = () => {
-    detailTableRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    // Only show details if simulation data exists
+    if (dadosPoupanca.length > 0 || dadosSelic.length > 0) {
+      setMostrarDetalhes(true);
+      setTimeout(() => {
+        detailTableRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }, 100);
+    }
   };
 
   const handleSimular = async (valores) => {
     try {
       setErro(null);
       setCarregandoSimulacao(true);
+      setMostrarDetalhes(false); 
       const response = await axios.post("http://localhost:8080/api/investimento/simular", valores, 
           { headers: { "Content-Type": "application/json", Accept: "application/json" } });
       
@@ -66,19 +74,23 @@ function PaginaInvestimentos() {
           {erro && (
             <Grid item xs={12}>
               <Paper sx={{ p: 3, backgroundColor: "#fff0f0", border: "1px solid #ffcdd2" }}>
-                <Typography color="error">{erro}</Typography>
+                <Typography color="error" sx={{ fontSize: '1.1rem' }}>{erro}</Typography>
               </Paper>
             </Grid>
           )}
-          <Grid item xs={12}>
-            <Stack direction={{ xs: "column", md: "row" }} spacing={4} alignItems="stretch" sx={{ width: "100%" }}>
-              <BlocoTotalTransacao dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} />
-              <HeaderBotaoConta dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} onVerDetalhes={scrollToDetails} />
-            </Stack>
-          </Grid>
-          <Grid item xs={12} ref={detailTableRef}>
-            <HeaderBotaoPaginas detalhesPoupanca={detalhesPoupanca} detalhesSelic={detalhesSelic} />
-          </Grid>
+          {(dadosPoupanca.length > 0 || dadosSelic.length > 0) && (
+            <Grid item xs={12}>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={4} alignItems="stretch" sx={{ width: "100%" }}>
+                <BlocoTotalTransacao dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} />
+                <HeaderBotaoConta dadosPoupanca={dadosPoupanca} dadosSelic={dadosSelic} onVerDetalhes={scrollToDetails} />
+              </Stack>
+            </Grid>
+          )}
+          {mostrarDetalhes && (dadosPoupanca.length > 0 || dadosSelic.length > 0) && (
+            <Grid item xs={12} ref={detailTableRef}>
+              <HeaderBotaoPaginas detalhesPoupanca={detalhesPoupanca} detalhesSelic={detalhesSelic} />
+            </Grid>
+          )}
         </Grid>
       </Box>
     </Box>
