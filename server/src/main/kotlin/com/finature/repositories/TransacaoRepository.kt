@@ -31,17 +31,18 @@ class TransacaoRepository {
     private fun dataFiltrada(mes: String, ano: String): Op<Boolean> {
         return when {
             mes == "0" && ano == "Todos" -> Op.TRUE
-            mes == "0" -> TransacaoTable.data.like("%/$ano")
-            ano == "Todos" -> TransacaoTable.data.like("%/${mes.padStart(2, '0')}/%")
-            else -> TransacaoTable.data.like("%/${mes.padStart(2, '0')}/$ano")
+            mes == "0" -> TransacaoTable.data.like("$ano-%")
+            ano == "Todos" -> TransacaoTable.data.like("____-${mes.padStart(2, '0')}-%")
+            else -> TransacaoTable.data.like("$ano-${mes.padStart(2, '0')}-%")
         }
     }
+    
 
     fun buscaGastosPorMesAno(usuarioId: Int, mes: String, ano: String): List<ResultRow> {
         return transaction {
             TransacaoTable.select {
                 (TransacaoTable.usuarioId eq EntityID(usuarioId, UsuarioTable)) and
-                (TransacaoTable.tipoId eq EntityID(1, TipoTransacaoTable)) and 
+                (TransacaoTable.tipoId eq EntityID(-1, TipoTransacaoTable)) and 
                 dataFiltrada(mes, ano)
             }.toList()
         }

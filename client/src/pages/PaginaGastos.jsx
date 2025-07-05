@@ -11,7 +11,7 @@ function PaginaGastos() {
         new Date().toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + 
         new Date().toLocaleString('pt-BR', { month: 'long' }).slice(1)
     );
-    const [indiceMes, setIndiceMes] = useState(new Date().getMonth());
+    const [indiceMes, setIndiceMes] = useState(new Date().getMonth() + 1);
     const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
 
     const handleSelecionarMes = (mes, indice) => {

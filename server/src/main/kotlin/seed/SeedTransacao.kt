@@ -20,10 +20,11 @@ fun seedTransacao() {
         val usuario = usuarios.random()
         val tipoTransacao = tiposTransacao.random()
         val dataAleatoria = faker.date().past(365, java.util.concurrent.TimeUnit.DAYS)
-        val dataFormatada = String.format("%02d/%02d/%04d", 
-            dataAleatoria.date, 
+        val dataFormatada = String.format("%04d-%02d-%02d", 
+            dataAleatoria.year + 1900,
             dataAleatoria.month + 1, 
-            dataAleatoria.year + 1900)
+            dataAleatoria.date
+        ) 
 
         TransacaoDAO.new {
             this.data = dataFormatada
