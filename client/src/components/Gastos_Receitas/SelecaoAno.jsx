@@ -47,7 +47,7 @@ const StyledMenuItem = styled(MenuItem)({
 });
 
 const SelecaoAno = ({ aoSelecionarAno }) => {
-    const [anoSelecionado, setAnoSelecionado] = useState('Selecionar Ano');
+    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
     const [elementoAncora, setElementoAncora] = useState(null);
     const aberto = Boolean(elementoAncora);
 

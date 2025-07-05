@@ -6,9 +6,12 @@ import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
 import { useState } from 'react';
 
 function PaginaGastos() {
-    const [mesSelecionado, setMesSelecionado] = useState('Selecionar Mês');
-    const [indiceMes, setIndiceMes] = useState(0);
-    const [anoSelecionado, setAnoSelecionado] = useState('Selecionar Ano');
+    const [mesSelecionado, setMesSelecionado] = useState(
+        new Date().toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + 
+        new Date().toLocaleString('pt-BR', { month: 'long' }).slice(1)
+    );
+    const [indiceMes, setIndiceMes] = useState(new Date().getMonth());
+    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
 
     const handleSelecionarMes = (mes, indice) => {
         setMesSelecionado(mes);

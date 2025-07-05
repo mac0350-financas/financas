@@ -47,7 +47,10 @@ const StyledMenuItem = styled(MenuItem)({
 });
 
 const SelecaoMes = ({ aoSelecionarMes }) => {
-    const [mesSelecionado, setMesSelecionado] = useState('Selecionar Mês');
+    const [mesSelecionado, setMesSelecionado] = useState(
+        new Date().toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + 
+        new Date().toLocaleString('pt-BR', { month: 'long' }).slice(1)
+    );
     const [elementoAncora, setElementoAncora] = useState(null);
     const aberto = Boolean(elementoAncora);
 
