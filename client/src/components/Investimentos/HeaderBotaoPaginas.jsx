@@ -64,10 +64,10 @@ const HeaderBotaoPaginas = ({ detalhesPoupanca, detalhesSelic }) => {
                 <Typography variant="subtitle1" fontWeight="bold"></Typography>
               </TableCell>
               <TableCell align="center" sx={{ color: cores.fundoBranco, fontWeight: "bold", py: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold">Tesouro Selic</Typography>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ fontSize: '1.1rem' }}>Tesouro Selic</Typography>
               </TableCell>
               <TableCell align="center" sx={{ color: cores.fundoBranco, fontWeight: "bold", py: 2 }}>
-                <Typography variant="subtitle1" fontWeight="bold">Poupança</Typography>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ fontSize: '1.1rem' }}>Poupança</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -81,17 +81,17 @@ const HeaderBotaoPaginas = ({ detalhesPoupanca, detalhesSelic }) => {
                 }}
               >
                 <TableCell sx={{ fontWeight: "medium", py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "medium"} color={cores.fundoEscuro}>
+                  <Typography variant="body1" fontWeight={highlight ? "bold" : "medium"} color={cores.fundoEscuro} sx={{ fontSize: '1.1rem' }}>
                     {label}
                   </Typography>
                 </TableCell>
                 <TableCell align="center" sx={{ py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro}>
+                  <Typography variant="body1" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro} sx={{ fontSize: '1.1rem' }}>
                     {selic}
                   </Typography>
                 </TableCell>
                 <TableCell align="center" sx={{ py: 1.5 }}>
-                  <Typography variant="body2" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro}>
+                  <Typography variant="body1" fontWeight={highlight ? "bold" : "normal"} color={cores.fundoEscuro} sx={{ fontSize: '1.1rem' }}>
                     {poupanca}
                   </Typography>
                 </TableCell>
