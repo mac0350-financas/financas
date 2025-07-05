@@ -1,23 +1,23 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import { styled } from '@mui/system';
-import { cores } from '../../themes/temas';
+import { cores, titulo, bordas } from '../../themes/temas';
 
 const BotaoSerFinature = styled(Button)({
   height: '50px',
   width: '95%',
   backgroundColor: cores.cinzaClaro, 
-  borderRadius: '10px',
-  fontFamily: 'Kantumruy Pro, sans-serif',
+  borderRadius: bordas.raioPadrao,
+  fontFamily: titulo.fontePadrao,
   alignContent: 'center',
-  fontWeight: 'bold',
-  color: '#2F404A',
+  fontWeight: titulo.pesoNegrito,
+  color: cores.fundoEscuro,
   fontSize: '20px',
   '&:hover': {
-    backgroundColor: '#D9D9D9', 
+    backgroundColor: cores.botaoHover, 
   },
   '&:disabled': {
-    backgroundColor: 'rgba(109, 122, 130, 0.3)',
+    backgroundColor: cores.botaoPrimario,
     color: '#999',
     cursor: 'not-allowed',
   },

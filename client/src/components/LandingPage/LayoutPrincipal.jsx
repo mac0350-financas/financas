@@ -1,4 +1,5 @@
 import { styled } from '@mui/system';
+import { cores } from '../../themes/temas';
 
 export const MainContainer = styled('div')({
   display: 'flex',
@@ -7,7 +8,7 @@ export const MainContainer = styled('div')({
   width: '100%',
   margin: 0,
   padding: 0,
-  backgroundColor: '#2F404A',
+  backgroundColor: cores.fundoEscuro,
   position: 'absolute',
   top: 0,
   left: 0,
@@ -19,7 +20,7 @@ export const Conteudo = styled('div')({
   display: 'flex',
   flex: '0 0 auto',
   minHeight: '100vh',
-  backgroundColor: '#2F404A'
+  backgroundColor: cores.fundoEscuro
 });
 
 export const MetadeEsquerda = styled('div')({
@@ -62,8 +63,7 @@ export const MetadeBaixo = styled('div')({
 });
 
 export const SecaoInferior = styled('div')({
-  backgroundColor: '#F2F2F2',
-  padding: '60px 0',
+  backgroundColor: cores.fundoLandingSecao,
   display: 'flex',
-  justifyContent: 'center',
+  flexDirection: 'column',
 });

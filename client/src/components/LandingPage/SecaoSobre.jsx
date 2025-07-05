@@ -12,9 +12,9 @@ const SecaoSobre = () => {
   };
 
   const handleSaibaMaisClick = () => {
-    const carrosselSection = document.getElementById('carrossel-section');
-    if (carrosselSection) {
-      carrosselSection.scrollIntoView({ behavior: 'smooth' });
+    const funcionalidadesSection = document.getElementById('funcionalidades-section');
+    if (funcionalidadesSection) {
+      funcionalidadesSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -62,13 +62,14 @@ const SecaoSobre = () => {
           mt: 3,
           cursor: 'pointer',
           textDecoration: 'underline',
+          width: '95%',
           '&:hover': {
             color: '#FFFFFF',
           },
         }}
         onClick={handleSaibaMaisClick}
       >
-        Saiba mais as nossas funcionalidades
+        Conheça nossos diferenciais
       </Typography>
     </Box>
   );
