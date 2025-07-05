@@ -33,6 +33,7 @@ function PaginaGastos() {
             <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
             <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
             <TotalTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
+            <DescricaoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
         </div>
     );
 }

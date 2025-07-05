@@ -38,23 +38,41 @@ class TransacaoRepository {
     }
     
 
-    fun buscaGastosPorMesAno(usuarioId: Int, mes: String, ano: String): List<ResultRow> {
+    fun buscaGastosPorMesAno(usuarioId: Int, mes: String, ano: String): List<TransacaoDTO> {
         return transaction {
             TransacaoTable.select {
                 (TransacaoTable.usuarioId eq EntityID(usuarioId, UsuarioTable)) and
                 (TransacaoTable.tipoId eq EntityID(-1, TipoTransacaoTable)) and 
                 dataFiltrada(mes, ano)
-            }.toList()
+            }.map {
+                TransacaoDTO(
+                    data = it[TransacaoTable.data],
+                    valor = it[TransacaoTable.valor],
+                    tipoId = -1,
+                    categoria = it[TransacaoTable.categoria],
+                    descricao = it[TransacaoTable.descricao],
+                    usuarioId = usuarioId
+                )
+            }
         }
     }
-
-    fun buscaReceitasPorMesAno(usuarioId: Int, mes: String, ano: String): List<ResultRow> {
+    
+    fun buscaReceitasPorMesAno(usuarioId: Int, mes: String, ano: String): List<TransacaoDTO> {
         return transaction {
             TransacaoTable.select {
                 (TransacaoTable.usuarioId eq EntityID(usuarioId, UsuarioTable)) and
                 (TransacaoTable.tipoId eq EntityID(1, TipoTransacaoTable)) and 
                 dataFiltrada(mes, ano)
-            }.toList()
+            }.map {
+                TransacaoDTO(
+                    data = it[TransacaoTable.data],
+                    valor = it[TransacaoTable.valor],
+                    tipoId = 1,
+                    categoria = it[TransacaoTable.categoria],
+                    descricao = it[TransacaoTable.descricao],
+                    usuarioId = usuarioId
+                )
+            }
         }
     }
 

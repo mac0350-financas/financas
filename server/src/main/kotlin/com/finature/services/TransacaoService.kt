@@ -20,10 +20,21 @@ class TransacaoService(private val transacaoRepository: TransacaoRepository) {
     }
 
     fun somaTransacoes(usuarioId: Int, tipo: Int, mes: String, ano: String): Double {
-        val transacoes: List<ResultRow>
-        if (tipo == -1) transacoes = transacaoRepository.buscaGastosPorMesAno(usuarioId, mes, ano)
-        else transacoes = transacaoRepository.buscaReceitasPorMesAno(usuarioId, mes, ano)
-        return transacoes.sumOf { it[TransacaoTable.valor] }
+        val transacoes: List<TransacaoDTO> = if (tipo == -1)
+            transacaoRepository.buscaGastosPorMesAno(usuarioId, mes, ano)
+        else
+            transacaoRepository.buscaReceitasPorMesAno(usuarioId, mes, ano)
+    
+        return transacoes.sumOf { it.valor }
+    }
+    
+
+    fun listaTransacoes(usuarioId: Int, tipo: Int, mes: String, ano: String): List<TransacaoDTO> {
+        val transacoes: List<TransacaoDTO> = if (tipo == -1)
+            transacaoRepository.buscaGastosPorMesAno(usuarioId, mes, ano)
+        else
+            transacaoRepository.buscaReceitasPorMesAno(usuarioId, mes, ano)
+        return transacoes
     }
 
 }
