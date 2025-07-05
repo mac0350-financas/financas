@@ -3,6 +3,7 @@ import BotaoInserirTransacao from '../components/Gastos_Receitas/BotaoInserirTra
 import DescricaoTransacoes from '../components/Gastos_Receitas/DescricaoTransacoes';
 import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
+import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
 import { useState } from 'react';
 
 function PaginaGastos() {
@@ -28,10 +29,10 @@ function PaginaGastos() {
     return (
         <div>
             <HeaderComMenu />
-            <DescricaoTransacoes tipo="gasto" />
+            <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
             <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
             <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
-
+            <TotalTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
         </div>
     );
 }

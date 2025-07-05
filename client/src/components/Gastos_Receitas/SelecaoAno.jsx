@@ -14,10 +14,6 @@ const StyledButton = styled(Button)({
     color: '#2F404A',
     fontFamily: 'Kantumruy Pro, sans-serif',
     fontSize: "24px",
-    border: '2px solid #2F404A',
-    '&:hover': {
-        backgroundColor: 'rgba(47, 64, 74, 0.1)',
-    }
 });
 
 const StyledMenu = styled(Menu)({
@@ -73,7 +69,7 @@ const SelecaoAno = ({ aoSelecionarAno }) => {
 
     return (
         <>
-            <StyledButton onClick={handleClick}>
+            <StyledButton variant="contained" onClick={handleClick}>
                 {anoSelecionado}
             </StyledButton>
             <StyledMenu
