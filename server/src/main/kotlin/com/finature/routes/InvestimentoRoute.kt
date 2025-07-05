@@ -44,6 +44,15 @@ private fun ultimoDiaUtilAnterior(ref: LocalDate = LocalDate.now(BR_ZONE)): Loca
     return data
 }
 
+/** Retorna o próximo dia útil anterior à data fornecida */
+private fun proximoDiaUtilAnterior(data: LocalDate): LocalDate {
+    var proximaData = data.minusDays(1)
+    while (proximaData.dayOfWeek == DayOfWeek.SATURDAY || proximaData.dayOfWeek == DayOfWeek.SUNDAY) {
+        proximaData = proximaData.minusDays(1)
+    }
+    return proximaData
+}
+
 suspend fun fetchSerie(codigo: Int): Double {
     val key = codigo.toString()
     val now = Instant.now()
@@ -59,35 +68,57 @@ suspend fun fetchSerie(codigo: Int): Double {
     }
     println("Cache MISS para série $codigo - fazendo requisição à API BCB")
     
-    val dia = ultimoDiaUtilAnterior()
-    val dataStr = DF.format(dia)
-
-    val url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.$codigo/" +
-              "dados?formato=json&dataInicial=$dataStr&dataFinal=$dataStr"
-
-    val json = withContext(Dispatchers.IO) { URL(url).readText() }
-    val jsonElement = Json.parseToJsonElement(json)
+    // Tenta até 10 dias úteis para trás para encontrar dados válidos
+    var tentativas = 0
+    val maxTentativas = 10
+    var diaAtual = ultimoDiaUtilAnterior()
     
-    val jsonArray = when {
-        jsonElement is JsonArray -> jsonElement
-        jsonElement is JsonObject && jsonElement.containsKey("erro") -> {
-            throw IllegalStateException("Erro da API BCB: ${jsonElement["erro"]}")
+    while (tentativas < maxTentativas) {
+        try {
+            val dataStr = DF.format(diaAtual)
+            println("Tentativa ${tentativas + 1} para série $codigo na data $dataStr")
+
+            val url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.$codigo/" +
+                      "dados?formato=json&dataInicial=$dataStr&dataFinal=$dataStr"
+
+            val json = withContext(Dispatchers.IO) { URL(url).readText() }
+            val jsonElement = Json.parseToJsonElement(json)
+            
+            val jsonArray = when {
+                jsonElement is JsonArray -> jsonElement
+                jsonElement is JsonObject && jsonElement.containsKey("erro") -> {
+                    println("Erro da API BCB para data $dataStr: ${jsonElement["erro"]}")
+                    null // Continua para próxima data
+                }
+                else -> {
+                    println("Resposta inesperada da API BCB para data $dataStr: $json")
+                    null // Continua para próxima data
+                }
+            }
+            
+            // Se conseguiu dados válidos e não está vazio
+            if (jsonArray != null && jsonArray.isNotEmpty()) {
+                val ultimoItem = jsonArray.last()
+                val percentualStr = ultimoItem.jsonObject["valor"]!!.jsonPrimitive.content.replace(',', '.')
+                val taxaFracao = percentualStr.toDouble() / 100.0
+
+                cache[key] = now to taxaFracao
+                println("Cache STORED para série $codigo: $taxaFracao (data: $dataStr)")
+                return taxaFracao
+            } else {
+                println("Dados vazios para série $codigo na data $dataStr")
+            }
+            
+        } catch (e: Exception) {
+            println("Erro ao buscar série $codigo na data ${DF.format(diaAtual)}: ${e.message}")
         }
-        else -> {
-            println("Resposta inesperada da API BCB: $json")
-            throw IllegalStateException("Formato de resposta inesperado da API BCB")
-        }
+        
+        // Vai para o dia útil anterior
+        tentativas++
+        diaAtual = proximoDiaUtilAnterior(diaAtual)
     }
-
-    require(jsonArray.isNotEmpty()) { "Série vazia para $dataStr" }
-
-    val ultimoItem = jsonArray.last()
-    val percentualStr = ultimoItem.jsonObject["valor"]!!.jsonPrimitive.content.replace(',', '.')
-    val taxaFracao = percentualStr.toDouble() / 100.0
-
-    cache[key] = now to taxaFracao
-    println("Cache STORED para série $codigo: $taxaFracao")
-    return taxaFracao
+    
+    throw IllegalStateException("Não foi possível obter dados para a série $codigo após $maxTentativas tentativas")
 }
 
 fun Route.investimentoRoute(
