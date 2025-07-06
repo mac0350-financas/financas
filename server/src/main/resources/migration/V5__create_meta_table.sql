@@ -4,5 +4,7 @@ CREATE TABLE metas (
     usuario_id INT NOT NULL REFERENCES usuarios(id),
     categoria VARCHAR(255) NOT NULL,
     valor_limite DOUBLE PRECISION NOT NULL,
-    periodo DOUBLE PRECISION NOT NULL
+    valor_atual DOUBLE PRECISION NOT NULL,
+    data_inicial VARCHAR(255) NOT NULL,
+    data_final VARCHAR(255) NOT NULL
 );

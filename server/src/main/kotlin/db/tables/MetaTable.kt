@@ -6,5 +6,7 @@ object MetaTable : IntIdTable("metas") {
     val usuarioId = reference("usuario_id", UsuarioTable)
     val categoria = varchar("categoria", 255)
     val valorLimite = double("valor_limite")
-    val periodo = double("periodo")
+    val valorAtual = double("valor_atual")
+    val dataInicial = varchar("data_inicial", 255)
+    val dataFinal = varchar("data_final", 255)
 }
