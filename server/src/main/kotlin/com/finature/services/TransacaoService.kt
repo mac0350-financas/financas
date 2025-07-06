@@ -2,6 +2,7 @@ package com.finature.services
 
 import com.finature.repositories.TransacaoRepository
 import com.finature.models.TransacaoDTO
+import com.finature.models.CategoriaTotal
 import com.finature.db.tables.TransacaoTable
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -35,6 +36,13 @@ class TransacaoService(private val transacaoRepository: TransacaoRepository) {
         else
             transacaoRepository.buscaReceitasPorMesAno(usuarioId, mes, ano)
         return transacoes
+    }
+
+    fun transacoesPorCategoria(usuarioId: Int, tipo: Int, mes: String, ano: String): List<CategoriaTotal> {
+        if (tipo == -1)
+            return transacaoRepository.buscaGastosPorCategoria(usuarioId, mes, ano)
+        else
+            return transacaoRepository.buscaReceitasPorCategoria(usuarioId, mes, ano)
     }
 
 }

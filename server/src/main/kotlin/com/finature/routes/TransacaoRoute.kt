@@ -118,6 +118,42 @@ fun Route.transacaoRoute() {
 
         }
 
+        get("/grafico") {
+
+            try {
+                val usuarioSessao = call.sessions.get<UsuarioSessao>()
+                    ?: throw IllegalStateException("Usuário não autenticado")
+                val tipo = call.request.queryParameters["tipo"]
+                    ?: throw IllegalArgumentException("Parâmetro 'tipo' é obrigatório")
+                val mes = call.request.queryParameters["mes"]
+                    ?: throw IllegalArgumentException("Parâmetro 'mes' é obrigatório")
+                val ano = call.request.queryParameters["ano"]
+                    ?: throw IllegalArgumentException("Parâmetro 'ano' é obrigatório")
+                
+                val transacaoRepository = TransacaoRepository()
+                val transacaoService = TransacaoService(transacaoRepository)
+                
+                val listaGrafico = transacaoService.transacoesPorCategoria(
+                    usuarioId = usuarioSessao.id ?: throw IllegalStateException("ID do usuário não encontrado"),
+                    tipo = tipo.toInt(),
+                    mes = mes,
+                    ano = ano
+                )
+                call.respond(listaGrafico)
+            }
+
+            catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("message" to e.message))
+            }
+
+            catch (e: Exception) {
+                val statusCode = HttpStatusCode.InternalServerError
+                val message = e.message ?: "Erro interno do servidor"
+                call.respond(statusCode, mapOf("message" to message))
+            }
+
+        }
+
 
     }
 

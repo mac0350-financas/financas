@@ -4,6 +4,7 @@ import DescricaoTransacoes from '../components/Gastos_Receitas/DescricaoTransaco
 import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
 import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
+import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
 import { useState } from 'react';
 
 function PaginaGastos() {
@@ -34,6 +35,7 @@ function PaginaGastos() {
             <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
             <TotalTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
             <DescricaoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
+            <GraficoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
         </div>
     );
 }
