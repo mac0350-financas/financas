@@ -3,11 +3,10 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledButton = styled(Button)({
-    margin: '8px',
     padding: '12px 24px',
     fontWeight: 'bold',
     textTransform: 'none',
-    width: '128px',
+    width: '50%',
     height: '84px',
     borderRadius: '30px',
     backgroundColor: 'transparent',

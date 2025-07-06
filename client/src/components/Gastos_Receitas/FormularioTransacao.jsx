@@ -136,6 +136,14 @@ function FormularioTransacao(tipo) {
 
 };
 
+  const categoriasG = ['🍽️ Alimentação', '🚗 Transporte', '🩺 Saúde', '🎓 Educação', '🎉 Lazer', '🏠 Moradia', 
+                      '👚 Vestuário', '💼 Negócios', '💸 Dívidas', '🐶 Pets', '✨ Outros'];
+  
+  const categoriasR = ['💼 Salário', '💰 Freelance', '📈 Investimentos', '🎁 Presente', '💸 Reembolso', 
+                      '🏠 Aluguel', '🛒 Venda', '🤝 Parceria', '🎥 Streaming', '✨ Outros'];
+  
+  const categoriasAtual = tipoTransacaoId === -1 ? categoriasG : categoriasR;
+
   return (
     <FormControl component="form" onSubmit={handleSubmit} fullWidth>
       {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '1024px' }}>{error}</Alert>}
@@ -165,7 +173,7 @@ function FormularioTransacao(tipo) {
           select
           fullWidth
         >
-          {categorias.map((categoria) => (
+          {categoriasAtual.map((categoria) => (
             <MenuItem key={categoria} value={categoria}>
               {categoria}
             </MenuItem>

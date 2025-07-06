@@ -79,7 +79,7 @@ function PaginaInvestimentos() {
     <Box sx={{ minHeight: "100vh", backgroundColor: cores.fundoBranco }}>
       <HeaderComMenu />
       <Box sx={{ p: espacamento.paddingInterno }}>
-        <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>Simulador de Investimentos</Typography>
+        <Typography variant="h3" fontWeight="bold" mb={4} color={cores.fundoEscuro}>Simulador de Investimentos</Typography>
         <Grid container direction="column" spacing={4}>
           <Grid item xs={12}>
             <FormularioTransacao onSubmit={handleSimular} carregando={carregandoSimulacao} />
