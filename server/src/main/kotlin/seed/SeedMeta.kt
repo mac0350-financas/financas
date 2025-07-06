@@ -8,14 +8,36 @@ fun seedMeta() {
     val faker = Faker()
     val usuarios = UsuarioDAO.all().toList()
 
-    repeat(10) {
+    val categorias = listOf(
+        "🍽️ Alimentação", "🚗 Transporte", "🩺 Saúde", "🎓 Educação", "🎉 Lazer", "🏠 Moradia",
+        "👚 Vestuário", "💼 Negócios", "💸 Dívidas", "📈 Investimentos", "💝 Doação e presente",
+        "🐶 Pets", "💼 Salário", "💰 Freelance", "📈 Investimentos", "🎁 Presente", "💸 Reembolso", 
+        "🏠 Aluguel", "🛒 Venda", "🤝 Parceria", "🎥 Streaming", "✨ Outros"
+    )
+
+
+    repeat(50) {
         val usuario = usuarios.random()
+        val dataAleatoriaInicial = faker.date().past(1000, java.util.concurrent.TimeUnit.DAYS)
+        val dataFormatadaInicial = String.format("%04d-%02d-%02d", 
+            dataAleatoriaInicial.year + 1900,
+            dataAleatoriaInicial.month + 1, 
+            dataAleatoriaInicial.date
+        )
+        val dataAleatoriaFinal = faker.date().past(1000, java.util.concurrent.TimeUnit.DAYS)
+        val dataFormatadaFinal = String.format("%04d-%02d-%02d", 
+            dataAleatoriaFinal.year + 1900,
+            dataAleatoriaFinal.month + 1, 
+            dataAleatoriaFinal.date
+        )  
 
         MetaDAO.new {
             usuarioId = usuario.id
-            categoria = faker.commerce().department()
+            categoria = categorias.random()
             valorLimite = faker.number().randomDouble(2, 100, 2000)
-            periodo = listOf(30.0, 90.0, 180.0, 365.0).random()
+            valorAtual = faker.number().randomDouble(2, 100, 2000) 
+            dataInicial = dataFormatadaInicial
+            dataFinal = dataFormatadaFinal
         }
 
     }
