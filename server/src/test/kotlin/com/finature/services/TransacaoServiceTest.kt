@@ -1,64 +1,83 @@
 package com.finature.services
 
-import com.finature.repositories.TransacaoRepository
+import kotlin.test.*
 import io.mockk.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import com.finature.repositories.TransacaoRepository
+import com.finature.models.TransacaoDTO
+import com.finature.models.CategoriaTotal
 
+/**
+ * Testes unitários para TransacaoService.
+ * Usa mocks para isolar a lógica de negócio.
+ */
 class TransacaoServiceTest {
 
-    private lateinit var transacaoRepository: TransacaoRepository
-    private lateinit var transacaoService: TransacaoService
-
-    @BeforeEach
-    fun setup() {
-        transacaoRepository = mockk()
-        transacaoService = TransacaoService(transacaoRepository)
-    }
+    private val mockRepository = mockk<TransacaoRepository>()
+    private val service = TransacaoService(mockRepository)
 
     @Test
-    fun `criarTransacao deve salvar transacao com dados corretos`() {
-        val usuarioId = 1
-        val descricao = "Compra no supermercado"
-        val valor = 150.75
-        val categoria = "Alimentação"
-        val data = "2024-01-15"
-        val tipoId = 2
+    fun `criarTransacao chama repository com dados corretos`() {
+        every { mockRepository.salvaTransacao(any()) } just Runs
         
-        every { transacaoRepository.salvaTransacao(any()) } just Runs
-
-        transacaoService.criarTransacao(usuarioId, descricao, valor, categoria, data, tipoId)
-
-        verify { 
-            transacaoRepository.salvaTransacao(match { transacao ->
-                transacao.usuarioId == usuarioId &&
-                transacao.descricao == descricao &&
-                transacao.valor == valor &&
-                transacao.categoria == categoria &&
-                transacao.data == data &&
-                transacao.tipoId == tipoId
-            })
+        service.criarTransacao(1, "Teste", 100.0, "Categoria", "2024-01-01", -1)
+        
+        verify {
+            mockRepository.salvaTransacao(
+                TransacaoDTO(
+                    data = "2024-01-01",
+                    valor = 100.0,
+                    tipoId = -1,
+                    categoria = "Categoria",
+                    descricao = "Teste",
+                    usuarioId = 1
+                )
+            )
         }
     }
 
     @Test
-    fun `criarTransacao deve funcionar com valores decimais precisos`() {
-        // dado
-        val usuarioId = 1
-        val descricao = "Transferência PIX"
-        val valor = 1234.56
-        val categoria = "Transferência"
-        val data = "2024-01-15"
-        val tipoId = 1
+    fun `somaTransacoes calcula total de gastos corretamente`() {
+        val transacoes = listOf(
+            TransacaoDTO("2024-01-01", 100.0, -1, "Cat1", "Desc1", 1),
+            TransacaoDTO("2024-01-02", 150.0, -1, "Cat2", "Desc2", 1)
+        )
+        every { mockRepository.buscaGastosPorMesAno(1, "01", "2024") } returns transacoes
         
-        every { transacaoRepository.salvaTransacao(any()) } just Runs
+        val total = service.somaTransacoes(1, -1, "01", "2024")
+        
+        assertEquals(250.0, total)
+    }
 
-        // quando
-        transacaoService.criarTransacao(usuarioId, descricao, valor, categoria, data, tipoId)
+    @Test
+    fun `somaTransacoes calcula total de receitas corretamente`() {
+        val transacoes = listOf(
+            TransacaoDTO("2024-01-01", 2000.0, 1, "Salário", "Janeiro", 1)
+        )
+        every { mockRepository.buscaReceitasPorMesAno(1, "01", "2024") } returns transacoes
+        
+        val total = service.somaTransacoes(1, 1, "01", "2024")
+        
+        assertEquals(2000.0, total)
+    }
 
-        // entao
-        verify { 
-            transacaoRepository.salvaTransacao(match { it.valor == 1234.56 })
-        }
+    @Test
+    fun `listaTransacoes retorna gastos quando tipo eh -1`() {
+        val gastos = listOf(TransacaoDTO("2024-01-01", 100.0, -1, "Cat", "Desc", 1))
+        every { mockRepository.buscaGastosPorMesAno(1, "01", "2024") } returns gastos
+        
+        val resultado = service.listaTransacoes(1, -1, "01", "2024")
+        
+        assertEquals(gastos, resultado)
+        verify { mockRepository.buscaGastosPorMesAno(1, "01", "2024") }
+    }
+
+    @Test
+    fun `transacoesPorCategoria retorna categorias de gastos`() {
+        val categorias = listOf(CategoriaTotal("Alimentação", 150.0))
+        every { mockRepository.buscaGastosPorCategoria(1, "01", "2024") } returns categorias
+        
+        val resultado = service.transacoesPorCategoria(1, -1, "01", "2024")
+        
+        assertEquals(categorias, resultado)
     }
 }
