@@ -97,20 +97,20 @@ function FormularioTransacao(tipo) {
 
     try {
       const response = await fetch('http://localhost:8080/formulario-transacao', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-              data: formData.data,
-              descricao: formData.descricao,
-              categoria: formData.categoria,
-              valor: formData.valor,
-              tipoId: tipoTransacaoId,
-              usuarioId: null
-          }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          data: formData.data,
+          descricao: formData.descricao,
+          categoria: formData.categoria,
+          valor: parseFloat(formData.valor),
+          tipoId: tipoTransacaoId,
+          usuarioId: null
+        }),
       });
 
       if (response.ok) {

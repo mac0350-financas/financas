@@ -14,7 +14,8 @@ const StyledButton = styled(Button)({
     backgroundColor: 'transparent',
     color: '#2F404A',
     fontFamily: 'Kantumruy Pro, sans-serif',
-    fontSize: "24px"
+    fontSize: "24px",
+    
 });
 
 const StyledDialog = styled(Dialog)({

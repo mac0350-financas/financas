@@ -3,12 +3,17 @@ import BotaoInserirTransacao from '../components/Gastos_Receitas/BotaoInserirTra
 import DescricaoTransacoes from '../components/Gastos_Receitas/DescricaoTransacoes';
 import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
+import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
+import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
 import { useState } from 'react';
 
 function PaginaGastos() {
-    const [mesSelecionado, setMesSelecionado] = useState('Selecionar Mês');
-    const [indiceMes, setIndiceMes] = useState(0);
-    const [anoSelecionado, setAnoSelecionado] = useState('Selecionar Ano');
+    const [mesSelecionado, setMesSelecionado] = useState(
+        new Date().toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + 
+        new Date().toLocaleString('pt-BR', { month: 'long' }).slice(1)
+    );
+    const [indiceMes, setIndiceMes] = useState(new Date().getMonth() + 1);
+    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
 
     const handleSelecionarMes = (mes, indice) => {
         setMesSelecionado(mes);
@@ -25,10 +30,12 @@ function PaginaGastos() {
     return (
         <div>
             <HeaderComMenu />
-            <DescricaoTransacoes tipo="gasto" />
+            <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
             <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
             <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
-
+            <TotalTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
+            <DescricaoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
+            <GraficoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
         </div>
     );
 }
