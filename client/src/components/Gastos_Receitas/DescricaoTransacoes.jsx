@@ -38,9 +38,9 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     boxShadow: 'none',
     border: '1px solid #e0e0e0',
     borderRadius: '16px',
-    maxWidth: '1024px',
-    width: '1024px',
-    maxHeight: '600px',
+    maxWidth: '100vw',
+    width: '100vw',
+    maxHeight: '400px',
     overflowY: 'auto',
 }));
 

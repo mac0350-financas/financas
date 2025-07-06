@@ -2,8 +2,8 @@ import { Typography, Box, styled } from '@mui/material';
 import { useState, useEffect } from 'react';
 
 const BlocoTotal = styled(Box)({
-    width: '384px',
-    height: '128px',
+    width: '30vw',
+    height: '160px',
     borderRadius: '30px',
     backgroundColor: 'transparent',
     border: '1px solid #2F404A',
@@ -16,7 +16,7 @@ const BlocoTotal = styled(Box)({
 
 const TextoTotal = styled(Typography)({
     fontFamily: 'Kantumruy Pro, sans-serif',
-    fontSize: '18px',
+    fontSize: '24px',
     fontWeight: 'bold',
     color: '#2F404A',
     marginBottom: '10px',
@@ -24,7 +24,7 @@ const TextoTotal = styled(Typography)({
 
 const TextoValor = styled(Typography)({
     fontFamily: 'Kantumruy Pro, sans-serif',
-    fontSize: '32px',
+    fontSize: '40px',
     fontWeight: 'bold',
     color: '#722F37',
 });

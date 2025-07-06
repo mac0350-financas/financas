@@ -2,26 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Typography, Box, styled } from '@mui/material';
 
-const StyledContainer = styled(Box)(({ theme }) => ({
-    width: '100%',
-    maxWidth: '60vw',
-    margin: '0 auto',
-    marginTop: theme.spacing(4),
-    padding: theme.spacing(3),
-    borderRadius: '24px',
-    boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.15)',
-    background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[100]} 100%)`,
-}));
-
-const StyledTitle = styled(Typography)(({ theme }) => ({
-    textAlign: 'center',
-    color: theme.palette.text.primary,
-    fontWeight: 600,
-    marginBottom: theme.spacing(2),
-    fontSize: '1.5rem',
-    fontFamily: 'Kantumruy Pro, sans-serif',
-}));
-
 const StyledLoadingText = styled(Typography)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -124,28 +104,22 @@ function GraficoTransacoes({ tipo, mes, ano }) {
     ];
 
     return (
-        <StyledContainer>
-            <StyledTitle variant="h6" gutterBottom>
-                Gráfico de {tipo === 'gastos' ? 'gastos' : 'receitas'} por categoria
-            </StyledTitle>
-
+        <Box sx={{ width: '96%', height: '100%' }}>
             {loading ? (
                 <StyledLoadingText>Carregando gráfico...</StyledLoadingText>
             ) : dados.length > 0 ? (
-                <StyledChartContainer>
+                <StyledChartContainer sx={{ width: '100%', height: '400px' }}>
                     <StyledPieChart
                         series={[{
                             data: dados,
                             highlightScope: { faded: 'global', highlighted: 'item' },
                             faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                             innerRadius: 20,
-                            outerRadius: 170,
+                            outerRadius: 120,
                             paddingAngle: 2,
                             cornerRadius: 5,
                         }]}
                         colors={modernColors}
-                        width={800}
-                        height={450}
                         slotProps={{
                             legend: {
                                 direction: 'column',
@@ -158,7 +132,7 @@ function GraficoTransacoes({ tipo, mes, ano }) {
             ) : (
                 <StyledLoadingText>Nenhum dado disponível para exibir</StyledLoadingText>
             )}
-        </StyledContainer>
+        </Box>
     );
 }
 

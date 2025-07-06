@@ -5,6 +5,8 @@ import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
 import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
 import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
+import { Typography, Box } from '@mui/material';
+import { cores, espacamento } from '../themes/temas';
 import { useState } from 'react';
 
 function PaginaGastos() {
@@ -30,12 +32,55 @@ function PaginaGastos() {
     return (
         <div>
             <HeaderComMenu />
-            <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
-            <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
-            <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
-            <TotalTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
-            <DescricaoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
-            <GraficoTransacoes tipo={"gastos"} mes={indiceMes.toString()} ano={anoSelecionado} />
+            <Box sx={{ p: espacamento.paddingInterno }}>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+
+                {/* Título separado no topo */}
+                <Typography variant="h3" fontWeight="bold" color={cores.fundoEscuro}>
+                    Gastos
+                </Typography>
+
+                {/* Conteúdo principal: gráfico e controles lado a lado, alinhados no topo */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
+                    {/* Gráfico */}
+                    <Box sx={{ flex: 1, minWidth: '300px' }}>
+                        <GraficoTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                    </Box>
+
+                    {/* Controles: seletores em cima, total e botão abaixo */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: '250px' }}>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
+                            <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
+                        </Box>
+
+                        <TotalTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                        <Box sx={{ marginTop: 9 }}>
+                            <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+
+
+
+
+                <Box sx={{ width: '100%', mt: 12 }}>
+                    {/* Texto alinhado à esquerda */}
+                    <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>
+                                Descrição dos gastos
+                    </Typography>
+
+                    {/* Componente centralizado */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <DescricaoTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                    </Box>
+                </Box>
+
+
+                
+            </Box>
         </div>
     );
 }

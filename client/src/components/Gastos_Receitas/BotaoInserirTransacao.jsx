@@ -4,17 +4,16 @@ import { styled } from '@mui/system';
 import FormularioTransacao from './FormularioTransacao';
 
 const StyledButton = styled(Button)({
-    margin: '8px',
     padding: '12px 24px',
     fontWeight: 'bold',
     textTransform: 'none',
-    width: '354px',
+    width: '31.5vw',
     height: '84px',
     borderRadius: '30px',
     backgroundColor: 'transparent',
     color: '#2F404A',
     fontFamily: 'Kantumruy Pro, sans-serif',
-    fontSize: "24px",
+    fontSize: "28px",
     
 });
 
