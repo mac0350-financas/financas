@@ -10,13 +10,18 @@ fun seedTransacao() {
     val usuarios = UsuarioDAO.all().toList()
     val tiposTransacao = TipoTransacaoDAO.all().toList()
     
-    val categorias = listOf(
+    val categoriasG = listOf(
         "🍽️ Alimentação", "🚗 Transporte", "🩺 Saúde", "🎓 Educação", "🎉 Lazer", "🏠 Moradia",
         "👚 Vestuário", "💼 Negócios", "💸 Dívidas", "📈 Investimentos", "💝 Doação e presente",
         "🐶 Pets", "✨ Outros"
     )
 
-    repeat(100) {
+    val categoriasR = listOf(
+        "💼 Salário", "💰 Freelance", "📈 Investimentos", "🎁 Presente", "💸 Reembolso", 
+        "🏠 Aluguel", "🛒 Venda", "🤝 Parceria", "🎥 Streaming", "✨ Outros"
+    )
+
+    repeat(300) {
         val usuario = usuarios.random()
         val tipoTransacao = tiposTransacao.random()
         val dataAleatoria = faker.date().past(365, java.util.concurrent.TimeUnit.DAYS)
@@ -30,7 +35,7 @@ fun seedTransacao() {
             this.data = dataFormatada
             this.valor = faker.number().randomDouble(2, 10, 1000)            
             this.tipoId = tipoTransacao.id
-            this.categoria = categorias.random()
+            this.categoria = if (tipoTransacao.id.value == -1) categoriasG.random() else categoriasR.random()
             this.descricao = faker.lorem().sentence(3)
             this.usuarioId = usuario.id        
         }

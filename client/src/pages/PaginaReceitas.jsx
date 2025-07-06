@@ -1,11 +1,88 @@
 import HeaderComMenu from '../components/HeaderComMenu';
+import BotaoInserirTransacao from '../components/Gastos_Receitas/BotaoInserirTransacao';
+import DescricaoTransacoes from '../components/Gastos_Receitas/DescricaoTransacoes';
+import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
+import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
+import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
+import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
+import { Typography, Box } from '@mui/material';
+import { cores, espacamento } from '../themes/temas';
+import { useState } from 'react';
 
 function PaginaReceitas() {
+    const [mesSelecionado, setMesSelecionado] = useState(
+        new Date().toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + 
+        new Date().toLocaleString('pt-BR', { month: 'long' }).slice(1)
+    );
+    const [indiceMes, setIndiceMes] = useState(new Date().getMonth() + 1);
+    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
+
+    const handleSelecionarMes = (mes, indice) => {
+        setMesSelecionado(mes);
+        setIndiceMes(indice);
+        console.log('Mês selecionado:', mes, 'Índice:', indice);
+    };
+
+    const handleSelecionarAno = (ano) => {
+        setAnoSelecionado(ano);
+        console.log('Ano selecionado:', ano);
+    };
+
+
     return (
         <div>
             <HeaderComMenu />
+            <Box sx={{ p: espacamento.paddingInterno }}>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+
+                {/* Título separado no topo */}
+                <Typography variant="h3" fontWeight="bold" color={cores.fundoEscuro}>
+                    Receitas
+                </Typography>
+
+                {/* Conteúdo principal: gráfico e controles lado a lado, alinhados no topo */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
+                    {/* Gráfico */}
+                    <Box sx={{ flex: 1, minWidth: '300px' }}>
+                        <GraficoTransacoes tipo="receitas" mes={indiceMes.toString()} ano={anoSelecionado} />
+                    </Box>
+
+                    {/* Controles: seletores em cima, total e botão abaixo */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: '250px' }}>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <SelecaoMes aoSelecionarMes={handleSelecionarMes} />
+                            <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
+                        </Box>
+
+                        <TotalTransacoes tipo="receitas" mes={indiceMes.toString()} ano={anoSelecionado} />
+                        <Box sx={{ marginTop: 9 }}>
+                            <BotaoInserirTransacao texto=" Nova receita" tipo="receita" />
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+
+
+
+
+                <Box sx={{ width: '100%', mt: 12 }}>
+                    {/* Texto alinhado à esquerda */}
+                    <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>
+                                Descrição das receitas
+                    </Typography>
+
+                    {/* Componente centralizado */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <DescricaoTransacoes tipo="receitas" mes={indiceMes.toString()} ano={anoSelecionado} />
+                    </Box>
+                </Box>
+
+
+                
+            </Box>
         </div>
     );
 }
 
-export default PaginaReceitas; 
+export default PaginaReceitas;
