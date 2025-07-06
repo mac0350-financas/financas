@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import axios from "axios";
 import HeaderComMenu from "../components/HeaderComMenu";
 import FormularioTransacao from "../components/Investimentos/FormularioTransacao";
 import BlocoTotalTransacao from "../components/Investimentos/BlocoTotalTransacao";
@@ -43,20 +42,34 @@ function PaginaInvestimentos() {
       setErro(null);
       setCarregandoSimulacao(true);
       setMostrarDetalhes(false); 
-      const response = await axios.post("http://localhost:8080/api/investimento/simular", valores, 
-          { headers: { "Content-Type": "application/json", Accept: "application/json" } });
       
-      console.log("Resposta completa:", response.data);
+      const response = await fetch("http://localhost:8080/api/investimento/simular", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(valores)
+      });
       
-      if (response.data.error) throw new Error(response.data.error);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || errorData.message || 'Erro ao realizar simulação');
+      }
       
-      setDadosPoupanca(response.data.poupanca);
-      setDadosSelic(response.data.selic);
-      setDetalhesPoupanca(response.data.detalhesPoupanca);
-      setDetalhesSelic(response.data.detalhesSelic);
+      const data = await response.json();
+      console.log("Resposta completa:", data);
+      
+      if (data.error) throw new Error(data.error);
+      
+      setDadosPoupanca(data.poupanca);
+      setDadosSelic(data.selic);
+      setDetalhesPoupanca(data.detalhesPoupanca);
+      setDetalhesSelic(data.detalhesSelic);
     } catch (err) {
       console.error("Erro completo:", err);
-      setErro(err.response?.data?.error || "Não foi possível realizar a simulação. Tente novamente mais tarde.");
+      setErro(err.message || "Não foi possível realizar a simulação. Tente novamente mais tarde.");
     } finally {
       setCarregandoSimulacao(false);
     }
