@@ -44,7 +44,7 @@ const StyledButton = styled(Button)({
 });
 
 
-function FormularioTransacao(tipo) {
+function FormularioTransacao({ onSuccess, tipo }) {
   const [formData, setFormData] = useState({
     data: '',
     descricao: '',
@@ -52,7 +52,7 @@ function FormularioTransacao(tipo) {
     valor: ''
   });
 
-  const tipoTransacaoId = tipo.tipo === 'gasto' ? -1 : 1;
+  const tipoTransacaoId = tipo === 'gasto' ? -1 : 1;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -114,6 +114,7 @@ function FormularioTransacao(tipo) {
           console.log('Formulário enviado com sucesso');
           setSuccess(true);
           setFormData({ data: '', descricao: '', categoria: '', valor: '' });
+          if (onSuccess) onSuccess();
       } 
       else {
           const data = await response.json();
@@ -182,11 +183,11 @@ function FormularioTransacao(tipo) {
           type="number"
           name="valor"
           value={formData.valor}
-          onChange={handleChange}
+          onChange={handleChange}  
           fullWidth
         />
         <StyledButton type="submit" variant="contained" disabled={loading}>
-          {loading ? 'SALVANDO ' + tipo.tipo.toUpperCase() : 'SALVAR ' + tipo.tipo.toUpperCase()}
+          {loading ? 'SALVANDO ' + tipo.toUpperCase() : 'SALVAR ' + tipo.toUpperCase()}
         </StyledButton>
       </StyledForm>
     </FormControl>

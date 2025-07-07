@@ -45,7 +45,7 @@ const StyledDialogActions = styled(DialogActions)({
     fontFamily: 'Kantumruy Pro, sans-serif',
 });
 
-const BotaoInserirTransacao = ({ texto, tipo }) => {
+const BotaoInserirTransacao = ({ onSuccess, texto, tipo }) => {
   const [formAberto, setFormAberto] = React.useState(false);
 
   const handleClick = () => {
@@ -76,9 +76,7 @@ const BotaoInserirTransacao = ({ texto, tipo }) => {
         >
           <StyledDialogTitle>Inserir novo {tipo}! ✨</StyledDialogTitle>
           <StyledDialogContent>
-            <FormularioTransacao
-              tipo={tipo}
-            />
+            <FormularioTransacao onSuccess={onSuccess} tipo={tipo}/>
           </StyledDialogContent>
           <StyledDialogActions>
             <Button onClick={() => setFormAberto(false)} color="secondary">
