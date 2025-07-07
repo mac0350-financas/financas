@@ -1,5 +1,6 @@
 package com.finature.db.tables
 import org.jetbrains.exposed.sql.Table
+import com.finature.db.tables.TipoTransacaoTable
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 object MetaTable : IntIdTable("metas") {
@@ -9,4 +10,5 @@ object MetaTable : IntIdTable("metas") {
     val valorAtual = double("valor_atual")
     val dataInicial = varchar("data_inicial", 255)
     val dataFinal = varchar("data_final", 255)
-}
+    val tipoId = reference("tipo", TipoTransacaoTable)
+} 

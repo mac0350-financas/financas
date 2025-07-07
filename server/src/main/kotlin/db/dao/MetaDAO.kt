@@ -15,6 +15,7 @@ class MetaDAO(id: EntityID<Int>) : IntEntity(id) {
     var valorAtual by MetaTable.valorAtual
     var dataInicial by MetaTable.dataInicial
     var dataFinal by MetaTable.dataFinal
+    var tipoId by MetaTable.tipoId
 
     fun toDTO() = MetaDTO(
         usuarioId = usuarioId.value,
@@ -22,6 +23,7 @@ class MetaDAO(id: EntityID<Int>) : IntEntity(id) {
         valorLimite = valorLimite,
         valorAtual = valorAtual, 
         dataInicial = dataInicial,
-        dataFinal = dataFinal
-    )
+        dataFinal = dataFinal,
+        tipoId = tipoId.value
+    ) 
 }

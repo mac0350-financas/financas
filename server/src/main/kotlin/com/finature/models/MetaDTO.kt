@@ -8,6 +8,7 @@ data class MetaDTO(
     val valorLimite: Double,
     val valorAtual: Double,
     val dataInicial: String,
-    val dataFinal: String,
+    val dataFinal: String, 
+    val tipoId: Int,
 )
 
