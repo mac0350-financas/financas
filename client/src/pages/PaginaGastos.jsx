@@ -5,7 +5,6 @@ import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
 import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
 import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
-import GradeMetas from '../components/PaginaPrincipalUsuario/GradeMetas';
 import { Typography, Box } from '@mui/material';
 import { cores, espacamento } from '../themes/temas';
 import { useState } from 'react';
@@ -75,8 +74,6 @@ function PaginaGastos() {
                         <DescricaoTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                     </Box>
                 </Box>
-
-                <GradeMetas/>
                 
             </Box>
         </div>
