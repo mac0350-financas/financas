@@ -5,6 +5,7 @@ import SelecaoMes from '../components/Gastos_Receitas/SelecaoMes';
 import SelecaoAno from '../components/Gastos_Receitas/SelecaoAno';
 import TotalTransacoes from '../components/Gastos_Receitas/TotalTransacoes';
 import GraficoTransacoes from '../components/Gastos_Receitas/GraficoTransacoes';
+import GradeMetas from '../components/Gastos_Receitas/GradeMetas';
 import { Typography, Box } from '@mui/material';
 import { cores, espacamento } from '../themes/temas';
 import { useState } from 'react';
@@ -57,7 +58,7 @@ function PaginaGastos() {
 
                             <TotalTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                             <Box sx={{ marginTop: 9 }}>
-                                <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
+                                <BotaoInserirTransacao texto="+ Novo Gasto" tipo="gasto" />
                             </Box>
                         </Box>
                     </Box>
@@ -73,6 +74,12 @@ function PaginaGastos() {
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <DescricaoTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                     </Box>
+                </Box>
+                <Box sx={{ width: '100%', mt: 12 }}>
+                    <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>
+                                Metas de gastos
+                    </Typography>
+                    <GradeMetas tipo="gastos" />
                 </Box>
                 
             </Box>

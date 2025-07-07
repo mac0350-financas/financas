@@ -6,5 +6,7 @@ CREATE TABLE metas (
     valor_limite DOUBLE PRECISION NOT NULL,
     valor_atual DOUBLE PRECISION NOT NULL,
     data_inicial VARCHAR(255) NOT NULL,
-    data_final VARCHAR(255) NOT NULL
+    data_final VARCHAR(255) NOT NULL,
+    tipo INT NOT NULL,
+    FOREIGN KEY (tipo) REFERENCES tipos_transacao(id)
 );
