@@ -52,11 +52,17 @@ const BotaoInserirTransacao = ({ texto, tipo }) => {
     setFormAberto(true);
   };
 
+  const buttonColor = tipo === "gasto" ? '#F8D7DA' : '#D4EDDA'; // Slightly stronger red and green
+
   return (
     <>
       <StyledButton
         variant="contained"
         onClick={handleClick}
+        style={{ 
+          backgroundColor: buttonColor, 
+          border: `1px solid` // Add 1px border
+        }}
       >
         {texto}
       </StyledButton>
