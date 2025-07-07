@@ -5,7 +5,7 @@ const BlocoTotal = styled(Box)({
     width: '30vw',
     height: '160px',
     borderRadius: '30px',
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(173, 216, 230, 0.8)', // Azul claro
     border: '1px solid #2F404A',
     display: 'flex',
     flexDirection: 'column',
@@ -29,23 +29,21 @@ const TextoValor = styled(Typography)({
     color: '#722F37',
 });
 
-function TotalTransacoes({ tipo, mes, ano }) {
+function SaldoResultante({ mes, ano }) {
+
     const [valor, setValor] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    const BlocoTotalDynamic = styled(BlocoTotal)({
-        backgroundColor: tipo === 'gastos' ? '#FDECEC' : '#E8F5E9',
-    });
-
     const fetchTotal = async () => {
-        if (!mes || !ano || !tipo) return;
+        if (!mes || !ano) return;
         
         setLoading(true);
         try {
-            const tipoNumero = tipo === 'gastos' ? -1 : 1;
-            const response = await fetch(`/api/transacoes/total?tipo=${tipoNumero}&mes=${mes}&ano=${ano}`);
-            const data = await response.json();
-            setValor(data.total || 0);
+            const response1 = await fetch(`/api/transacoes/total?tipo=${1}&mes=${mes}&ano=${ano}`);
+            const data1 = await response1.json();
+            const response2 = await fetch(`/api/transacoes/total?tipo=${-1}&mes=${mes}&ano=${ano}`);
+            const data2 = await response2.json();
+            setValor(data1.total - data2.total || 0);
         } catch (error) {
             console.error('Erro ao buscar total:', error);
             setValor(0);
@@ -56,16 +54,19 @@ function TotalTransacoes({ tipo, mes, ano }) {
 
     useEffect(() => {
         fetchTotal();
-    }, [tipo, mes, ano]);
+    }, [mes, ano]);
 
-    return (
-        <BlocoTotalDynamic>
-            <TextoTotal>Total de {tipo?.toLowerCase()}</TextoTotal>
+    const nomeMes = new Date(ano, mes - 1).toLocaleString('pt-BR', { month: 'long' });
+
+    return(
+        <BlocoTotal>
+            <TextoTotal>Saldo resultante para {nomeMes} de {ano}</TextoTotal>
             <TextoValor>
                 {loading ? 'Carregando...' : `R$ ${valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             </TextoValor>
-        </BlocoTotalDynamic>
-    );
+        </BlocoTotal>
+    )
+
 }
 
-export default TotalTransacoes;
+export default SaldoResultante;

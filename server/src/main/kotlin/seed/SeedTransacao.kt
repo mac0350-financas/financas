@@ -13,7 +13,7 @@ fun seedTransacao() {
     val categoriasG = listOf(
         "🍽️ Alimentação", "🚗 Transporte", "🩺 Saúde", "🎓 Educação", "🎉 Lazer", "🏠 Moradia",
         "👚 Vestuário", "💼 Negócios", "💸 Dívidas", "📈 Investimentos", "💝 Doação e presente",
-        "🐶 Pets", "✨ Outros"
+        "🐶 Pets", "🛒 Mercado", "✈️ Viagem", "✨ Outros"
     )
 
     val categoriasR = listOf(

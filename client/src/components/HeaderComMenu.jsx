@@ -56,7 +56,7 @@ function HeaderComMenu() {
                 </LogoContainer>
                 <ContainerBotoes>
                     <QuatroBotoes>
-                        <HeaderBotaoPaginas texto="RESUMO" rota="/principal-usuario" />
+                        <HeaderBotaoPaginas texto="GERAL" rota="/principal-usuario" />
                         <HeaderBotaoPaginas texto="GASTOS" rota="/gastos" />
                         <HeaderBotaoPaginas texto="RECEITAS" rota="/receitas" />
                         <HeaderBotaoPaginas texto="INVESTIMENTOS" rota="/investimentos" />

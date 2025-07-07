@@ -3,7 +3,7 @@ package com.finature.routes
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationResponse
 import com.finature.models.SimulationResponseWithDetails
-import com.finature.service.InvestimentoService
+import com.finature.services.InvestimentoService
 import io.ktor.server.plugins.BadRequestException
 import kotlinx.serialization.SerializationException
 import io.ktor.server.routing.*
@@ -164,5 +164,28 @@ fun Route.investimentoRoute(
                     mapOf("error" to "Erro na simulação: ${e.message}"))
             }
         }
+
+        get("/taxas") {
+            try {
+                val selicAnual       = fetchSerieFn(1178) // SELIC
+                val trMensalPoupanca = fetchSerieFn(226)  // TR
+
+                val poupancaAnual = InvestimentoService.calcularPoupancaAnual(
+                    selicAnual, trMensalPoupanca
+                )
+
+                call.respond(
+                    mapOf(
+                        "selicAnual" to selicAnual,
+                        "poupancaAnual" to poupancaAnual
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError,
+                    mapOf("error" to "Erro ao obter taxas: ${e.message}"))
+            }
+        }
     }
+
 }

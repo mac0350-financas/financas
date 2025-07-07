@@ -1,4 +1,4 @@
-package com.finature.service
+package com.finature.services
 
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationPoint

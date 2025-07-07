@@ -43,13 +43,12 @@ const StyledButton = styled(Button)({
   backgroundColor: '#2F404A',
 });
 
-
-function FormularioTransacao({ onSuccess, tipo }) {
+function FormularioMeta({ onSuccess, tipo }) {
   const [formData, setFormData] = useState({
-    data: '',
-    descricao: '',
     categoria: '',
-    valor: ''
+    dataInicial: '',
+    dataFinal: '',
+    valorFinal: ''
   });
 
   const tipoTransacaoId = tipo === 'gasto' ? -1 : 1;
@@ -64,20 +63,20 @@ function FormularioTransacao({ onSuccess, tipo }) {
   };
 
   const validateForm = () => {
-    if (!formData.data.trim()) {
-        setError('Data é obrigatória');
-        return false;
-    }
-    if (!formData.descricao.trim()) {
-        setError('Descrição é obrigatória');
-        return false;
-    }
     if (!formData.categoria.trim()) {
         setError('Categoria é obrigatória');
         return false;
     }
-    if (!formData.valor.trim()) {
-      setError('Valor é obrigatório');
+    if (!formData.dataInicial.trim()) {
+        setError('Data inicial da meta é obrigatória');
+        return false;
+    }
+    if (!formData.dataFinal.trim()) {
+        setError('Data final da meta é obrigatória');
+        return false;
+    }
+    if (!formData.valorFinal.trim()) {
+      setError('Valor de objetivo é obrigatório');
       return false;
     }
     return true;
@@ -93,7 +92,7 @@ function FormularioTransacao({ onSuccess, tipo }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/formulario-transacao', {
+      const response = await fetch('http://localhost:8080/formulario-meta', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,19 +100,20 @@ function FormularioTransacao({ onSuccess, tipo }) {
         },
         credentials: 'include',
         body: JSON.stringify({
-          data: formData.data,
-          descricao: formData.descricao,
+          usuarioId: 0, 
           categoria: formData.categoria,
-          valor: parseFloat(formData.valor),
-          tipoId: tipoTransacaoId,
-          usuarioId: null
+          valorLimite: parseFloat(formData.valorFinal),
+          valorAtual: 0,
+          dataInicial: formData.dataInicial,
+          dataFinal: formData.dataFinal,
+          tipoId: tipoTransacaoId
         }),
       });
 
       if (response.ok) {
           console.log('Formulário enviado com sucesso');
           setSuccess(true);
-          setFormData({ data: '', descricao: '', categoria: '', valor: '' });
+          setFormData({ categoria: '', dataInicial: '', dataFinal: '', valorFinal: '' });
           if (onSuccess) onSuccess();
       } 
       else {
@@ -146,31 +146,15 @@ function FormularioTransacao({ onSuccess, tipo }) {
   return (
     <FormControl component="form" onSubmit={handleSubmit} fullWidth>
       {error && <Alert severity="error" sx={{ marginBottom: '16px', width: '1024px' }}>{error}</Alert>}
-      {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '1024px' }}>Transação salva com sucesso!</Alert>}
+      {success && <Alert severity="success" sx={{ marginBottom: '16px', width: '1024px' }}>Meta salva com sucesso!</Alert>}
       <StyledForm>
-        <StyledTextField
-          label="Data"
-          type="date"
-          name="data"
-          value={formData.data}
-          onChange={handleChange}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-        />
-        <StyledTextField
-          label="Descrição"
-          name="descricao"
-          value={formData.descricao}
-          onChange={handleChange}
-          fullWidth
-        />
         <StyledTextField
           label="Categoria"
           name="categoria"
           value={formData.categoria}
           onChange={handleChange}
           select
-          fullWidth
+          fullWidth 
         >
           {categoriasAtual.map((categoria) => (
             <MenuItem key={categoria} value={categoria}>
@@ -179,19 +163,37 @@ function FormularioTransacao({ onSuccess, tipo }) {
           ))}
         </StyledTextField>
         <StyledTextField
-          label="Valor (R$)"
+          label="Data inicial"
+          type="date"
+          name="dataInicial"
+          value={formData.dataInicial}
+          onChange={handleChange}
+          fullWidth
+          InputLabelProps={{ shrink: true }}
+        />
+        <StyledTextField
+          label="Data final"
+          type="date"
+          name="dataFinal"
+          value={formData.dataFinal}
+          onChange={handleChange}
+          fullWidth
+          InputLabelProps={{ shrink: true }}
+        />
+        <StyledTextField
+          label="Valor limite (R$)"
           type="number"
-          name="valor"
-          value={formData.valor}
-          onChange={handleChange}  
+          name="valorFinal"
+          value={formData.valorFinal}
+          onChange={handleChange}
           fullWidth
         />
         <StyledButton type="submit" variant="contained" disabled={loading}>
-          {loading ? 'SALVANDO ' + tipo.toUpperCase() : 'SALVAR ' + tipo.toUpperCase()}
+          {loading ? 'SALVANDO META'  : 'SALVAR META' }
         </StyledButton>
       </StyledForm>
     </FormControl>
   );
 };
 
-export default FormularioTransacao;
+export default FormularioMeta;
