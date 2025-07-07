@@ -13,7 +13,7 @@ fun seedMeta() {
     val categoriasG = listOf(
         "🍽️ Alimentação", "🚗 Transporte", "🩺 Saúde", "🎓 Educação", "🎉 Lazer", "🏠 Moradia",
         "👚 Vestuário", "💼 Negócios", "💸 Dívidas", "📈 Investimentos", "💝 Doação e presente",
-        "🐶 Pets", "✨ Outros"
+        "🐶 Pets", "🛒 Mercado", "✈️ Viagem", "✨ Outros"
     )
 
     val categoriasR = listOf(
@@ -22,7 +22,7 @@ fun seedMeta() {
     )
 
 
-    repeat(50) {
+    repeat(10) {
         val usuario = usuarios.random()
         val tipoTransacao = tiposTransacao.random()
         val dataAleatoriaInicial = faker.date().past(1000, java.util.concurrent.TimeUnit.DAYS)
@@ -31,7 +31,7 @@ fun seedMeta() {
             dataAleatoriaInicial.month + 1, 
             dataAleatoriaInicial.date
         )
-        val dataAleatoriaFinal = faker.date().past(1000, java.util.concurrent.TimeUnit.DAYS)
+        val dataAleatoriaFinal = faker.date().future(1000, java.util.concurrent.TimeUnit.DAYS)
         val dataFormatadaFinal = String.format("%04d-%02d-%02d", 
             dataAleatoriaFinal.year + 1900,
             dataAleatoriaFinal.month + 1, 

@@ -58,7 +58,7 @@ function PaginaGastos() {
 
                             <TotalTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                             <Box sx={{ marginTop: 9 }}>
-                                <BotaoInserirTransacao texto=" Novo Gasto" tipo="gasto" />
+                                <BotaoInserirTransacao texto="+ Novo Gasto" tipo="gasto" />
                             </Box>
                         </Box>
                     </Box>
@@ -75,8 +75,12 @@ function PaginaGastos() {
                         <DescricaoTransacoes tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                     </Box>
                 </Box>
-
-                <GradeMetas/>
+                <Box sx={{ width: '100%', mt: 12 }}>
+                    <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>
+                                Metas de gastos
+                    </Typography>
+                    <GradeMetas tipo="gastos" />
+                </Box>
                 
             </Box>
         </div>

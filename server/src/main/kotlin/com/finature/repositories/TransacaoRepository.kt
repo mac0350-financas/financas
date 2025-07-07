@@ -119,4 +119,31 @@ class TransacaoRepository {
         }
     }
 
+    fun buscaTransacoesMeta(
+        usuarioId: Int,
+        tipoId: Int,
+        categoria: String,
+        dataInicial: String,
+        dataFinal: String
+    ): List<TransacaoDTO> {
+        return transaction {
+            TransacaoTable.select {
+                (TransacaoTable.usuarioId eq EntityID(usuarioId, UsuarioTable)) and
+                (TransacaoTable.tipoId eq EntityID(tipoId, TipoTransacaoTable)) and
+                (TransacaoTable.categoria eq categoria) and
+                (TransacaoTable.data greaterEq dataInicial) and
+                (TransacaoTable.data lessEq dataFinal)
+            }.map {
+                TransacaoDTO(
+                    data = it[TransacaoTable.data],
+                    valor = it[TransacaoTable.valor],
+                    tipoId = it[TransacaoTable.tipoId].value,
+                    categoria = it[TransacaoTable.categoria],
+                    descricao = it[TransacaoTable.descricao],
+                    usuarioId = it[TransacaoTable.usuarioId].value
+                )
+            }
+        }
+    }
+
 }

@@ -45,4 +45,15 @@ class TransacaoService(private val transacaoRepository: TransacaoRepository) {
             return transacaoRepository.buscaReceitasPorCategoria(usuarioId, mes, ano)
     }
 
+    fun somaTransacoesMeta(
+        usuarioId: Int,
+        tipoId: Int,
+        categoria: String,
+        dataInicial: String,
+        dataFinal: String
+    ): Double {
+        val transacoes = transacaoRepository.buscaTransacoesMeta(usuarioId, tipoId, categoria, dataInicial, dataFinal)
+        return transacoes.sumOf { it.valor }
+    }
+
 }
