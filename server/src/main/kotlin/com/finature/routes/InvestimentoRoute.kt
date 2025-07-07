@@ -3,7 +3,7 @@ package com.finature.routes
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationResponse
 import com.finature.models.SimulationResponseWithDetails
-import com.finature.service.InvestimentoService
+import com.finature.services.InvestimentoService
 import io.ktor.server.plugins.BadRequestException
 import kotlinx.serialization.SerializationException
 import io.ktor.server.routing.*

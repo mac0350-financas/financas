@@ -1,6 +1,6 @@
 package com.finature.services
 
-import com.finature.service.InvestimentoService
+import com.finature.services.InvestimentoService
 import com.finature.models.SimulationRequest
 import com.finature.models.SimulationPoint
 import org.junit.jupiter.api.Test
