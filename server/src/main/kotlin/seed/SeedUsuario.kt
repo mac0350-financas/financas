@@ -16,7 +16,7 @@ fun seedUsuario() {
             UsuarioDAO.new {
                 this.nome = nome
                 this.email = email
-                this.senha = senhaHash
+                this.senha = senhaHash 
             }
         }
 
