@@ -4,7 +4,7 @@ import { cores } from '../../themes/temas';
 import CardMeta from './CardMeta';
 import BotaoNovaMeta from './BotaoNovaMeta';
 
-function GradeMetas( {tipo} ) {
+function GradeMetas({ onSuccess, tipo }) {
     const [metas, setMetas] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -32,7 +32,7 @@ function GradeMetas( {tipo} ) {
 
     return (
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 4 }}>
-            <BotaoNovaMeta tipo="gasto" />
+            <BotaoNovaMeta onSuccess={onSuccess} tipo="gasto" />
             {loading ? (
                 <Typography sx={{ gridColumn: 'span 4', textAlign: 'center' }}>Carregando metas...</Typography>
             ) : (

@@ -58,7 +58,7 @@ const StyledDialogActions = styled(DialogActions)({
     fontFamily: 'Kantumruy Pro, sans-serif',
 });
 
-function BotaoNovaMeta({ tipo }) {
+function BotaoNovaMeta({ onSuccess, tipo }) {
     const [formAberto, setFormAberto] = React.useState(false);
 
     const handleClick = () => {
@@ -82,9 +82,7 @@ function BotaoNovaMeta({ tipo }) {
                 >
                 <StyledDialogTitle>Inserir nova meta! ✨</StyledDialogTitle>
                 <StyledDialogContent>
-                    <FormularioMeta
-                    tipo={tipo}
-                    />
+                    <FormularioMeta onSuccess={onSuccess} tipo={tipo}/>
                 </StyledDialogContent>
                 <StyledDialogActions>
                     <Button onClick={() => setFormAberto(false)} color="secondary">

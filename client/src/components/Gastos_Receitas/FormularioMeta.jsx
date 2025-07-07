@@ -43,7 +43,7 @@ const StyledButton = styled(Button)({
   backgroundColor: '#2F404A',
 });
 
-function FormularioMeta(tipo) {
+function FormularioMeta({ onSuccess, tipo }) {
   const [formData, setFormData] = useState({
     categoria: '',
     dataInicial: '',
@@ -51,7 +51,7 @@ function FormularioMeta(tipo) {
     valorFinal: ''
   });
 
-  const tipoTransacaoId = tipo.tipo === 'gasto' ? -1 : 1;
+  const tipoTransacaoId = tipo === 'gasto' ? -1 : 1;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -114,6 +114,7 @@ function FormularioMeta(tipo) {
           console.log('Formulário enviado com sucesso');
           setSuccess(true);
           setFormData({ categoria: '', dataInicial: '', dataFinal: '', valorFinal: '' });
+          if (onSuccess) onSuccess();
       } 
       else {
           const data = await response.json();
@@ -153,7 +154,7 @@ function FormularioMeta(tipo) {
           value={formData.categoria}
           onChange={handleChange}
           select
-          fullWidth
+          fullWidth 
         >
           {categoriasAtual.map((categoria) => (
             <MenuItem key={categoria} value={categoria}>
