@@ -17,6 +17,7 @@ class TransacaoDAO(id: EntityID<Int>) : IntEntity(id) {
     var descricao by TransacaoTable.descricao
 
     fun toDTO() = TransacaoDTO(
+        id = this.id.value,
         usuarioId = usuarioId.value, 
         data = data,
         valor = valor,

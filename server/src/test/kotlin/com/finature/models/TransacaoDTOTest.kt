@@ -3,12 +3,14 @@ package com.finature.models
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.idParam
 
 class TransacaoDTOTest {
 
     @Test
     fun `deve criar TransacaoDTO corretamente`() {
         val transacao = TransacaoDTO(
+            id = 0,
             data = "2024-01-15",
             valor = 250.0,
             tipoId = 1,
@@ -28,6 +30,7 @@ class TransacaoDTOTest {
     @Test
     fun `deve serializar e desserializar TransacaoDTO corretamente`() {
         val transacao = TransacaoDTO(
+            id = 0,
             data = "2024-01-15",
             valor = 250.0,
             tipoId = 1,

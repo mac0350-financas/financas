@@ -3,6 +3,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TransacaoDTO(
+    val id: Int,
     val data: String,
     val valor: Double,
     val tipoId: Int,

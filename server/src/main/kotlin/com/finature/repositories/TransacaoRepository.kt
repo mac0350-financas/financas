@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.sum
 import com.finature.models.TransacaoDTO
 import com.finature.models.CategoriaTotal
@@ -47,6 +48,7 @@ class TransacaoRepository {
                 dataFiltrada(mes, ano)
             }.map {
                 TransacaoDTO(
+                    id = it[TransacaoTable.id].value,
                     data = it[TransacaoTable.data],
                     valor = it[TransacaoTable.valor],
                     tipoId = -1,
@@ -88,6 +90,7 @@ class TransacaoRepository {
                 dataFiltrada(mes, ano)
             }.map {
                 TransacaoDTO(
+                    id = it[TransacaoTable.id].value,
                     data = it[TransacaoTable.data],
                     valor = it[TransacaoTable.valor],
                     tipoId = 1,
@@ -135,6 +138,7 @@ class TransacaoRepository {
                 (TransacaoTable.data lessEq dataFinal)
             }.map {
                 TransacaoDTO(
+                    id = it[TransacaoTable.id].value,
                     data = it[TransacaoTable.data],
                     valor = it[TransacaoTable.valor],
                     tipoId = it[TransacaoTable.tipoId].value,
@@ -145,5 +149,19 @@ class TransacaoRepository {
             }
         }
     }
+
+    fun deletarPorId(id: Int): Boolean {
+        return transaction {
+            val transacao = TransacaoDAO.findById(id)
+            if (transacao != null) {
+                transacao.delete()
+                true
+            } else {
+                false
+            }
+        }
+    }
+    
+    
 
 }

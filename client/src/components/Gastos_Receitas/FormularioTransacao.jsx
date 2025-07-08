@@ -101,6 +101,7 @@ function FormularioTransacao({ onSuccess, tipo }) {
         },
         credentials: 'include',
         body: JSON.stringify({
+          id: 0,
           data: formData.data,
           descricao: formData.descricao,
           categoria: formData.categoria,
