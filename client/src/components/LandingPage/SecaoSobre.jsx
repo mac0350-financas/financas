@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { cores } from '../../themes/temas';
+import { cores, espacamento } from '../../themes/temas';
 import BotaoFinature from './BotaoFinature';
 
 const SecaoSobre = () => {
@@ -19,12 +19,13 @@ const SecaoSobre = () => {
   };
 
   return (
-    <Box
+    <Box 
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'left',
+        alignItems: 'flex-start',
         textAlign: 'left',
+        paddingLeft: '90px',
       }}
     >
       <Typography

@@ -88,6 +88,11 @@ function PaginaPrincipalUsuario() {
     const mesAtual = dataAtual.getMonth() + 1;
     const anoAtual = dataAtual.getFullYear();
 
+    const [reloadTrigger, setReloadTrigger] = useState(0);
+    const handleTransacaoEnviada = () => {
+        setReloadTrigger(prev => prev + 1); // incrementa para forçar reload nos filhos
+    };
+
     return (
         <div>
             <HeaderComMenu />
@@ -123,12 +128,12 @@ function PaginaPrincipalUsuario() {
                                 flexGrow: 1,
                                 mb: 4
                             }}>
-                                <SaldoResultante mes={mesAtual} ano={anoAtual} />
+                                <SaldoResultante key={reloadTrigger} mes={mesAtual} ano={anoAtual} />
                             </Box>
                             
                             <BotoesContainer sx={{ paddingTop: '30px' }}>
-                                <BotaoInserirTransacao texto="Nova Receita" tipo="receita" />
-                                <BotaoInserirTransacao texto="Novo Gasto" tipo="gasto" />
+                                <BotaoInserirTransacao onSuccess={handleTransacaoEnviada} texto="Nova Receita" tipo="receita" />
+                                <BotaoInserirTransacao onSuccess={handleTransacaoEnviada} texto="Novo Gasto" tipo="gasto" />
                             </BotoesContainer>
                         </Box>
 

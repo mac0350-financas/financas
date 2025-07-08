@@ -89,7 +89,7 @@ function PaginaReceitas() {
 
                     {/* Componente centralizado */}
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <DescricaoTransacoes key={reloadTrigger + reloadTriggerDescricao} tipo="receitas" mes={indiceMes.toString()} ano={anoSelecionado} />
+                        <DescricaoTransacoes onSuccess={handleDescricaoAlterada} key={reloadTrigger + reloadTriggerDescricao} tipo="receitas" mes={indiceMes.toString()} ano={anoSelecionado} />
                     </Box>
                 </Box>
                 <Box sx={{ width: '100%', mt: 12 }}>
