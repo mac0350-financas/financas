@@ -12,6 +12,10 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import kotlin.test.*
+import kotlinx.coroutines.test.runTest
+import java.time.LocalDate
+import java.time.Duration
+import java.time.Instant
 
 class InvestimentoRouteTest {
 
@@ -616,4 +620,187 @@ class InvestimentoRouteTest {
             assertTrue(true, "API real não disponível no ambiente de teste")
         }
     }
+
+    @Test
+    fun `fetchSerie deve lidar com dados vazios retornados pela API`() = testApplication {
+        val mockFetchSerie: suspend (Int) -> Double = { _ ->
+            throw IllegalStateException("Não foi possível obter dados para a série após 10 tentativas")
+        }
+
+        application {
+            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+            routing {
+                investimentoRoute(mockFetchSerie)
+            }
+        }
+
+        val response = client.post("/api/investimento/simular") {
+            contentType(ContentType.Application.Json)
+            setBody("""
+                {
+                    "aporteInicial": 1000.0,
+                    "aporteMensal": 100.0,
+                    "tempoMeses": 12
+                }
+            """.trimIndent())
+        }
+
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
+        assertTrue(response.bodyAsText().contains("Erro na simulação"))
+    }
+
+    @Test
+    fun `fetchSerie deve lidar com resposta inesperada da API`() = testApplication {
+        var tentativas = 0
+        val mockFetchSerie: suspend (Int) -> Double = { _ ->
+            tentativas++
+            throw IllegalStateException("Simulando resposta inesperada")
+        }
+
+        application {
+            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+            routing {
+                investimentoRoute(mockFetchSerie)
+            }
+        }
+
+        val response = client.post("/api/investimento/simular") {
+            contentType(ContentType.Application.Json)
+            setBody("""
+                {
+                    "aporteInicial": 1000.0,
+                    "aporteMensal": 100.0,
+                    "tempoMeses": 12
+                }
+            """.trimIndent())
+        }
+
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
+    }
+
+    @Test
+    fun `proximoDiaUtilAnterior pula fim de semana`() {
+        val sexta = LocalDate.of(2025, 7, 4) // Sexta-feira
+        val sabado = LocalDate.of(2025, 7, 5) // Sábado
+        val domingo = LocalDate.of(2025, 7, 6) // Domingo
+        val segunda = LocalDate.of(2025, 7, 7) // Segunda-feira
+
+        // Chamando com domingo, deve retornar sexta
+        val resultado1 = proximoDiaUtilAnterior(domingo)
+        assertEquals(sexta, resultado1)
+
+        // Chamando com segunda, deve retornar sexta (porque -1 é domingo, pula para sexta)
+        val resultado2 = proximoDiaUtilAnterior(segunda)
+        assertEquals(sexta, resultado2)
+
+        // Chamando com sexta, deve retornar quinta (sem fim de semana para pular)
+        val resultado3 = proximoDiaUtilAnterior(sexta)
+        val quinta = LocalDate.of(2025, 7, 3)
+        assertEquals(quinta, resultado3)
+    }
+
+    @Test
+    fun `simular investimento com aporte inicial zero deve funcionar`() = testApplication {
+        val mockFetchSerie: suspend (Int) -> Double = { 0.1 }
+
+        application {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true; isLenient = true })
+            }
+            routing { investimentoRoute(mockFetchSerie) }
+        }
+
+        val response = client.post("/api/investimento/simular") {
+            contentType(ContentType.Application.Json)
+            setBody("""
+                {
+                    "aporteInicial": 0.0,
+                    "aporteMensal": 100.0,
+                    "tempoMeses": 6
+                }
+            """.trimIndent())
+        }
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("poupanca"))
+        assertTrue(body.contains("selic"))
+    }
+
+    @Test
+    fun `simular investimento com tempo zero meses deve funcionar`() = testApplication {
+        val mockFetchSerie: suspend (Int) -> Double = { 0.1 }
+
+        application {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true; isLenient = true })
+            }
+            routing { investimentoRoute(mockFetchSerie) }
+        }
+
+        val response = client.post("/api/investimento/simular") {
+            contentType(ContentType.Application.Json)
+            setBody("""
+                {
+                    "aporteInicial": 1000.0,
+                    "aporteMensal": 100.0,
+                    "tempoMeses": 0
+                }
+            """.trimIndent())
+        }
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("poupanca"))
+        assertTrue(body.contains("selic"))
+    }
+
+    @Test
+    fun `get taxas deve retornar selic e poupanca`() = testApplication {
+        val mockFetchSerie: suspend (Int) -> Double = { codigo ->
+            when (codigo) {
+                1178 -> 0.13
+                226 -> 0.005
+                else -> 0.0
+            }
+        }
+
+        application {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true; isLenient = true })
+            }
+            routing { investimentoRoute(mockFetchSerie) }
+        }
+
+        val response = client.get("/api/investimento/taxas")
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("selicAnual"))
+        assertTrue(body.contains("poupancaAnual"))
+    }
+
+    @Test
+    fun `get taxas quando fetchSerie falha deve retornar 500`() = testApplication {
+        val mockFetchSerie: suspend (Int) -> Double = { _ ->
+            throw RuntimeException("API indisponível")
+        }
+
+        application {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true; isLenient = true })
+            }
+            routing { investimentoRoute(mockFetchSerie) }
+        }
+
+        val response = client.get("/api/investimento/taxas")
+
+        assertEquals(HttpStatusCode.InternalServerError, response.status)
+        val body = response.bodyAsText()
+        assertTrue(body.contains("error"))
+    }
+
+
+
+
 }

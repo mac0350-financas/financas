@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
@@ -21,6 +22,10 @@ fun Route.usuarioRoute() {
 
         try {
             val request = call.receive<UsuarioDTO>()
+            if (request.nome.isBlank() || request.email.isBlank() || request.senha.isBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Dados incompletos"))
+                return@post
+            }
             val usuarioRepository = UsuarioRepository()
             val usuarioService = UsuarioService(usuarioRepository)
             usuarioService.criarConta(
@@ -42,7 +47,6 @@ fun Route.usuarioRoute() {
     }
 
     post("/formulario-login") {
-
         try {
             val request = call.receive<UsuarioDTO>()
             val usuarioRepository = UsuarioRepository()
@@ -56,14 +60,8 @@ fun Route.usuarioRoute() {
         } 
         
         catch (e: Exception) {
-            val (statusCode, message) = when (e.message) {
-                "Email não encontrado" -> HttpStatusCode.NotFound to "Email não encontrado"
-                "Senha incorreta" -> HttpStatusCode.Unauthorized to "Senha incorreta"
-                else -> HttpStatusCode.InternalServerError to "Erro interno do servidor"
-            }
-            call.respond(statusCode, mapOf("message" to message))
+            call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "Erro interno do servidor"))
         }
-
     }
 
     post("/logout") {

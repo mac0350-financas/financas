@@ -14,7 +14,7 @@ import kotlinx.serialization.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import io.ktor.http.*
-import java.net.URL
+import java.net.URL 
 import java.time.*
 import java.time.format.DateTimeFormatter
 
@@ -45,7 +45,7 @@ private fun ultimoDiaUtilAnterior(ref: LocalDate = LocalDate.now(BR_ZONE)): Loca
 }
 
 /** Retorna o próximo dia útil anterior à data fornecida */
-private fun proximoDiaUtilAnterior(data: LocalDate): LocalDate {
+fun proximoDiaUtilAnterior(data: LocalDate): LocalDate {
     var proximaData = data.minusDays(1)
     while (proximaData.dayOfWeek == DayOfWeek.SATURDAY || proximaData.dayOfWeek == DayOfWeek.SUNDAY) {
         proximaData = proximaData.minusDays(1)
