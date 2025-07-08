@@ -1,7 +1,7 @@
 import { Typography, Box, styled, Paper } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-// Remove BotaoInserirTransacao import
+// Remove BotaoInserirTransacao import 
 
 const BlocoTotal = styled(Paper)({
     width: '100vw',
