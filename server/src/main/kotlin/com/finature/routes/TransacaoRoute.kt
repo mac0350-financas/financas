@@ -42,9 +42,26 @@ fun Route.transacaoRoute() {
             call.respond(statusCode, mapOf("message" to message))
         }
 
-    }
+    }    
 
     route("/api/transacoes") {
+
+        delete("/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest, "ID inválido")
+                return@delete
+            }
+        
+            val transacaoRepository = TransacaoRepository()
+            val transacaoService = TransacaoService(transacaoRepository)
+            val sucesso = transacaoService.removerTransacao(id)
+            if (sucesso) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Transação não encontrada")
+            }
+        }
 
         get("/total") {
 

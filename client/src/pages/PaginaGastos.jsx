@@ -39,6 +39,11 @@ function PaginaGastos() {
         setReloadTriggerMetas(prev => prev + 1); // incrementa para forçar reload nos filhos
     };
 
+    const [reloadTriggerDescricao, setReloadTriggerDescricao] = useState(0);
+    const handleDescricaoAlterada = () => {
+        setReloadTriggerDescricao(prev => prev + 1); // incrementa para forçar reload nos filhos
+    }
+
 
     return (
         <div>
@@ -56,7 +61,7 @@ function PaginaGastos() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, flexWrap: 'wrap' }}>
                         {/* Gráfico */}
                         <Box sx={{ flex: 1, minWidth: '300px' }}>
-                            <GraficoTransacoes key={reloadTrigger} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                            <GraficoTransacoes key={reloadTrigger + reloadTriggerDescricao} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                         </Box>
 
                         {/* Controles: seletores em cima, total e botão abaixo */}
@@ -66,7 +71,7 @@ function PaginaGastos() {
                                 <SelecaoAno aoSelecionarAno={handleSelecionarAno} />
                             </Box>
 
-                            <TotalTransacoes key={reloadTrigger} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                            <TotalTransacoes key={reloadTrigger + reloadTriggerDescricao} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                             <Box sx={{ marginTop: 9 }}>
                                 <BotaoInserirTransacao onSuccess={handleTransacaoEnviada} texto="+ Novo Gasto" tipo="gasto" />
                             </Box>
@@ -82,14 +87,14 @@ function PaginaGastos() {
 
                     {/* Componente centralizado */}
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <DescricaoTransacoes key={reloadTrigger} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
+                        <DescricaoTransacoes onSuccess={handleDescricaoAlterada} key={reloadTrigger + reloadTriggerDescricao} tipo="gastos" mes={indiceMes.toString()} ano={anoSelecionado} />
                     </Box>
                 </Box>
                 <Box sx={{ width: '100%', mt: 12 }}>
                     <Typography variant="h4" fontWeight="bold" mb={4} color={cores.fundoEscuro}>
                                 Metas de gastos
                     </Typography>
-                    <GradeMetas key={reloadTriggerMetas + reloadTrigger} onSuccess={handleMetaEnviada} tipo="gastos" />
+                    <GradeMetas key={reloadTriggerMetas + reloadTrigger + reloadTriggerDescricao} onSuccess={handleMetaEnviada} tipo="gastos" />
                 </Box>
                 
             </Box>

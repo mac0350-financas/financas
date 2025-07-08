@@ -24,6 +24,7 @@ class TransacaoServiceTest {
         verify {
             mockRepository.salvaTransacao(
                 TransacaoDTO(
+                    id = 0,
                     data = "2024-01-01",
                     valor = 100.0,
                     tipoId = -1,
@@ -38,8 +39,8 @@ class TransacaoServiceTest {
     @Test
     fun `somaTransacoes calcula total de gastos corretamente`() {
         val transacoes = listOf(
-            TransacaoDTO("2024-01-01", 100.0, -1, "Cat1", "Desc1", 1),
-            TransacaoDTO("2024-01-02", 150.0, -1, "Cat2", "Desc2", 1)
+            TransacaoDTO(0, "2024-01-01", 100.0, -1, "Cat1", "Desc1", 1),
+            TransacaoDTO(1, "2024-01-02", 150.0, -1, "Cat2", "Desc2", 1)
         )
         every { mockRepository.buscaGastosPorMesAno(1, "01", "2024") } returns transacoes
         
@@ -51,7 +52,7 @@ class TransacaoServiceTest {
     @Test
     fun `somaTransacoes calcula total de receitas corretamente`() {
         val transacoes = listOf(
-            TransacaoDTO("2024-01-01", 2000.0, 1, "Salário", "Janeiro", 1)
+            TransacaoDTO(0, "2024-01-01", 2000.0, 1, "Salário", "Janeiro", 1)
         )
         every { mockRepository.buscaReceitasPorMesAno(1, "01", "2024") } returns transacoes
         
@@ -62,7 +63,7 @@ class TransacaoServiceTest {
 
     @Test
     fun `listaTransacoes retorna gastos quando tipo eh -1`() {
-        val gastos = listOf(TransacaoDTO("2024-01-01", 100.0, -1, "Cat", "Desc", 1))
+        val gastos = listOf(TransacaoDTO(0, "2024-01-01", 100.0, -1, "Cat", "Desc", 1))
         every { mockRepository.buscaGastosPorMesAno(1, "01", "2024") } returns gastos
         
         val resultado = service.listaTransacoes(1, -1, "01", "2024")
@@ -80,4 +81,25 @@ class TransacaoServiceTest {
         
         assertEquals(categorias, resultado)
     }
-}
+
+    @Test
+    fun `removerTransacao chama repository com id correto e retorna true`() {
+        every { mockRepository.deletarPorId(1) } returns true
+
+        val resultado = service.removerTransacao(1)
+
+        assertTrue(resultado)
+        verify { mockRepository.deletarPorId(1) }
+    }
+
+    @Test
+    fun `removerTransacao chama repository com id correto e retorna false`() {
+        every { mockRepository.deletarPorId(1) } returns false
+
+        val resultado = service.removerTransacao(1)
+
+        assertFalse(resultado)
+        verify { mockRepository.deletarPorId(1) }
+    }
+
+} 

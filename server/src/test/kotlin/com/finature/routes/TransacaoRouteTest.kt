@@ -82,6 +82,7 @@ class TransacaoRouteTest {
             contentType(ContentType.Application.Json)
             setBody("""
                 {
+                    "id":0,
                     "data":"2024-01-15",
                     "descricao":"Compra supermercado",
                     "categoria":"Alimentação",
@@ -105,6 +106,7 @@ class TransacaoRouteTest {
             cookie("USUARIO_SESSAO", cookie)
             setBody("""
                 {
+                    "id":0,
                     "descricao":"Compra supermercado",
                     "valor":150.50,
                     "categoria":"Alimentação",
@@ -282,6 +284,62 @@ class TransacaoRouteTest {
         }
         assertEquals(HttpStatusCode.BadRequest, resp.status)
         assertTrue(resp.bodyAsText().contains("Parâmetro 'ano' é obrigatório"))
+    }
+
+    /* ---------- TESTES DELETE /api/transacoes/{id} ---------- */
+
+    @Test
+    fun `deletar transacao com id invalido devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.delete("/api/transacoes/abc") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("ID inválido"))
+    }
+
+    @Test
+    fun `deletar transacao inexistente devolve 404`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.delete("/api/transacoes/999") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.NotFound, resp.status)
+        assertTrue(resp.bodyAsText().contains("Transação não encontrada"))
+    }
+
+    @Test
+    fun `deletar transacao existente devolve 204`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        // Criar uma transação para deletar
+        val createResp = client.post("/formulario-transacao") {
+            contentType(ContentType.Application.Json)
+            cookie("USUARIO_SESSAO", cookie)
+            setBody("""
+                {
+                    "id":0,
+                    "descricao":"Compra supermercado",
+                    "valor":150.50,
+                    "categoria":"Alimentação",
+                    "data":"2024-01-15",
+                    "tipoId":-1,
+                    "usuarioId":1
+                }
+            """)
+        }
+        assertEquals(HttpStatusCode.Created, createResp.status)
+
+        // Deletar a transação criada
+        val deleteResp = client.delete("/api/transacoes/1") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.NoContent, deleteResp.status)
     }
 
 }

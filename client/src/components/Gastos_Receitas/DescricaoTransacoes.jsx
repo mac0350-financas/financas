@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/system';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   position: 'sticky',
@@ -44,7 +47,7 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     overflowY: 'auto',
 }));
 
-function DescricaoTransacoes({ tipo, mes, ano }) {
+function DescricaoTransacoes({ onSuccess, tipo, mes, ano }) {
     const [linhas, setLinhas] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -69,6 +72,26 @@ function DescricaoTransacoes({ tipo, mes, ano }) {
         fetchLinhas();
     }, [tipo, mes, ano]);
 
+    const handleRemover = async (id) => {
+        try {
+          const resposta = await fetch(`/api/transacoes/${id}`, {
+            method: 'DELETE',
+          });
+      
+          if (resposta.ok) {
+            setLinhas(linhas.filter((linha) => linha.id !== id));
+            if (onSuccess) {
+              onSuccess(); // Chama a função de callback se fornecida
+            }
+          } else {
+            console.error("Erro ao remover transação");
+          }
+        } catch (e) {
+          console.error("Erro na requisição de exclusão:", e);
+        }
+      };
+      
+
     return (
     <StyledTableContainer component={Paper}>
         {loading ? (
@@ -77,6 +100,7 @@ function DescricaoTransacoes({ tipo, mes, ano }) {
         <Table aria-label="tabela de transações">
             <StyledTableHead>
             <TableRow>
+                <TableCell align="center"></TableCell>
                 <TableCell align="left">Data</TableCell>
                 <TableCell align="left">Descrição</TableCell>
                 <TableCell align="left">Categoria</TableCell>
@@ -85,7 +109,12 @@ function DescricaoTransacoes({ tipo, mes, ano }) {
             </StyledTableHead>
             <StyledTableBody>
             {linhas.map((linha, index) => (
-                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableRow key={linha.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell align="center">
+                        <IconButton color="error" onClick={() => handleRemover(linha.id)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </TableCell>
                 <TableCell align="left">{linha.data}</TableCell>
                 <TableCell align="left">{linha.descricao}</TableCell>
                 <TableCell align="left">{linha.categoria}</TableCell>

@@ -61,6 +61,7 @@ class TransacaoRepositoryTest {
     @Test
     fun `salvaTransacao persiste gasto corretamente`() {
         val transacao = TransacaoDTO(
+            id = 0,
             data = "2024-01-15",
             valor = 100.0,
             tipoId = -1,
@@ -81,6 +82,7 @@ class TransacaoRepositoryTest {
     @Test
     fun `salvaTransacao persiste receita corretamente`() {
         val transacao = TransacaoDTO(
+            id = 0,
             data = "2024-01-15",
             valor = 2000.0,
             tipoId = 1,
@@ -100,9 +102,9 @@ class TransacaoRepositoryTest {
     @Test
     fun `buscaGastosPorMesAno filtra corretamente por mes e ano`() {
         // Adiciona gastos em meses diferentes
-        repo.salvaTransacao(TransacaoDTO("2024-01-15", 100.0, -1, "Alimentação", "Almoço", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-02-15", 200.0, -1, "Transporte", "Uber", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2023-01-15", 300.0, -1, "Alimentação", "Jantar", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-15", 100.0, -1, "Alimentação", "Almoço", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-02-15", 200.0, -1, "Transporte", "Uber", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2023-01-15", 300.0, -1, "Alimentação", "Jantar", usuarioId))
         
         val gastosJan2024 = repo.buscaGastosPorMesAno(usuarioId, "01", "2024")
         assertEquals(1, gastosJan2024.size)
@@ -116,8 +118,8 @@ class TransacaoRepositoryTest {
     @Test
     fun `buscaReceitasPorMesAno filtra corretamente por mes e ano`() {
         // Adiciona receitas em meses diferentes
-        repo.salvaTransacao(TransacaoDTO("2024-01-01", 2000.0, 1, "Salário", "Salário Janeiro", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-02-01", 2100.0, 1, "Salário", "Salário Fevereiro", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-01", 2000.0, 1, "Salário", "Salário Janeiro", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-02-01", 2100.0, 1, "Salário", "Salário Fevereiro", usuarioId))
         
         val receitasJan = repo.buscaReceitasPorMesAno(usuarioId, "01", "2024")
         assertEquals(1, receitasJan.size)
@@ -127,9 +129,9 @@ class TransacaoRepositoryTest {
     @Test
     fun `buscaGastosPorCategoria agrupa e soma corretamente`() {
         // Adiciona múltiplos gastos na mesma categoria
-        repo.salvaTransacao(TransacaoDTO("2024-01-01", 50.0, -1, "Alimentação", "Café", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-01-02", 100.0, -1, "Alimentação", "Almoço", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-01-03", 200.0, -1, "Transporte", "Uber", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-01", 50.0, -1, "Alimentação", "Café", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-02", 100.0, -1, "Alimentação", "Almoço", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-03", 200.0, -1, "Transporte", "Uber", usuarioId))
         
         val categorias = repo.buscaGastosPorCategoria(usuarioId, "01", "2024")
         assertEquals(2, categorias.size)
@@ -145,9 +147,9 @@ class TransacaoRepositoryTest {
 
     @Test
     fun `buscaReceitasPorCategoria agrupa e soma corretamente`() {
-        repo.salvaTransacao(TransacaoDTO("2024-01-01", 2000.0, 1, "Salário", "Salário principal", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-01-15", 500.0, 1, "Freelance", "Projeto extra", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-01-20", 300.0, 1, "Freelance", "Outro projeto", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-01", 2000.0, 1, "Salário", "Salário principal", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-15", 500.0, 1, "Freelance", "Projeto extra", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-01-20", 300.0, 1, "Freelance", "Outro projeto", usuarioId))
         
         val categorias = repo.buscaReceitasPorCategoria(usuarioId, "01", "2024")
         assertEquals(2, categorias.size)
@@ -176,8 +178,8 @@ class TransacaoRepositoryTest {
 
     @Test
     fun `filtro por ano funciona corretamente`() {
-        repo.salvaTransacao(TransacaoDTO("2023-06-15", 100.0, -1, "Alimentação", "Teste 2023", usuarioId))
-        repo.salvaTransacao(TransacaoDTO("2024-06-15", 200.0, -1, "Alimentação", "Teste 2024", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2023-06-15", 100.0, -1, "Alimentação", "Teste 2023", usuarioId))
+        repo.salvaTransacao(TransacaoDTO(0, "2024-06-15", 200.0, -1, "Alimentação", "Teste 2024", usuarioId))
         
         val gastos2023 = repo.buscaGastosPorMesAno(usuarioId, "0", "2023")
         val gastos2024 = repo.buscaGastosPorMesAno(usuarioId, "0", "2024")
@@ -186,5 +188,40 @@ class TransacaoRepositoryTest {
         assertEquals(1, gastos2024.size)
         assertEquals(100.0, gastos2023[0].valor)
         assertEquals(200.0, gastos2024[0].valor)
+    } 
+
+    @Test
+    fun `deletarPorId remove transacao corretamente`() {
+        // Adiciona uma transação
+        val transacao = TransacaoDTO(
+            id = 0,
+            data = "2024-01-15",
+            valor = 100.0,
+            tipoId = -1,
+            categoria = "Alimentação",
+            descricao = "Almoço",
+            usuarioId = usuarioId
+        )
+        repo.salvaTransacao(transacao)
+
+        // Verifica que a transação foi salva
+        val gastos = repo.buscaGastosPorMesAno(usuarioId, "01", "2024")
+        assertEquals(1, gastos.size)
+        val transacaoId = gastos[0].id
+
+        // Deleta a transação
+        val deletado = repo.deletarPorId(transacaoId)
+        assertTrue(deletado)
+
+        // Verifica que a transação foi removida
+        val gastosAposDelecao = repo.buscaGastosPorMesAno(usuarioId, "01", "2024")
+        assertTrue(gastosAposDelecao.isEmpty())
     }
+
+    @Test
+    fun `deletarPorId retorna false para id inexistente`() {
+        val deletado = repo.deletarPorId(9999) // ID inexistente
+        assertFalse(deletado)
+    }
+
 }
