@@ -10,11 +10,7 @@ A aplicação segue a arquitetura MVC, com backend desenvolvido em Kotlin utiliz
 - Versão do Ktor: 3.1.1
 - Versão do Kotlin: 2.1.20
 
-<<<<<<< Updated upstream
-=======
 Para instalar as dependências do NPM, faça o comando `npm install` no diretório `client`.
-
->>>>>>> Stashed changes
 ## Acessando o front-end
 
 1. Acesse um terminal;

@@ -12,11 +12,22 @@ import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.slf4j.event.*
+import com.finature.routes.usuarioRoute
+import com.finature.routes.transacaoRoute
+import com.finature.routes.investimentoRoute
+import com.finature.routes.metaRoute
 
 fun Application.configureRouting() {
+    
     routing {
+
         get("/") {
             call.respondText("Hello World!")
         }
+
+        usuarioRoute()
+        transacaoRoute()
+        investimentoRoute()
+        metaRoute()
     }
 }

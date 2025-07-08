@@ -1,0 +1,4 @@
+CREATE TABLE tipos_transacao (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    tipo INTEGER NOT NULL
+);
