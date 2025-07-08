@@ -26,6 +26,7 @@ import com.finature.services.UsuarioService
 
 class UsuarioRouteTest {
 
+    private val nomeOk = "Alice"
     private val emailOk = "alice@example.com"
     private val senhaOk = "123456"
 
@@ -39,7 +40,7 @@ class UsuarioRouteTest {
         )
         transaction {
             SchemaUtils.create(UsuarioTable, TransacaoTable, MetaTable, InvestimentoTable)
-            UsuarioService(UsuarioRepository()).criarConta("Alice", emailOk, senhaOk)
+            UsuarioService(UsuarioRepository()).criarConta(nomeOk, emailOk, senhaOk)
         }
     }
 
@@ -64,6 +65,18 @@ class UsuarioRouteTest {
     }
 
     @Test
+    fun `cadastro com email ja existente devolve 409`() = testApplication {
+        application { configBasica() }
+
+        val resp = client.post("/formulario-cadastro") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"nome":"Alice","email":"$emailOk","senha":"novaSenha"}""")
+        }
+        assertEquals(HttpStatusCode.Conflict, resp.status)
+        assertTrue(resp.bodyAsText().contains("Email já está em uso"))
+    }
+
+    @Test
     fun `login com email inexistente devolve 404`() = testApplication {
         application { configBasica() }
     
@@ -71,40 +84,40 @@ class UsuarioRouteTest {
             contentType(ContentType.Application.Json)
             setBody("""{"email":"ghost@example.com","senha":"qualquer"}""")
         }
-    
-        // // Troque ESTA linha ↓
-        // assertEquals(HttpStatusCode.NotFound, resp.status)
-        // por ESTA linha ↓
         assertEquals(HttpStatusCode.InternalServerError, resp.status)
     }
-    
 
-    // @Test
-    // fun `login sucesso gera cookie e rota protegida responde 200`() = testApplication {
-    //     application { configBasica() }
+    @Test
+    fun `logout limpa sessao e devolve 200`() = testApplication {
+        application { configBasica() }
 
-    //     /* 1 – login */
-    //     val login = client.post("/formulario-login") {
-    //         contentType(ContentType.Application.Json)
-    //         setBody("""{"email":"$emailOk","senha":"$senhaOk"}""")
-    //     }
-    //     assertEquals(HttpStatusCode.OK, login.status)
-    //     val sessao = login.setCookie().single()
+        // Simula login para criar sessão
+        client.post("/formulario-login") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"$emailOk","senha":"$senhaOk"}""")
+        }
 
-    //     /* 2 – rota protegida */
-    //     val me = client.get("/usuario-logado") {
-    //         cookie(sessao.name, sessao.value)
-    //     }
-    //     assertEquals(HttpStatusCode.OK, me.status)
-    //     assertTrue(me.bodyAsText().contains("Alice"))
+        // Faz logout
+        val resp = client.post("/logout")
+        assertEquals(HttpStatusCode.OK, resp.status)
+        assertTrue(resp.bodyAsText().contains("Logout feito com sucesso"))
 
-    //     /* 3 – logout */
-    //     val logout = client.post("/logout") { cookie(sessao.name, sessao.value) }
-    //     assertEquals(HttpStatusCode.OK, logout.status)
-    //     assertTrue(logout.setCookie().any { it.name == sessao.name && it.maxAge == 0 })
+        // Verifica se a sessão foi limpa
+        val sessaoResp = client.get("/usuario-logado")
+        assertEquals(HttpStatusCode.Unauthorized, sessaoResp.status)
+        assertTrue(sessaoResp.bodyAsText().contains("Usuário não logado"))
+    }
+    @Test
+    fun `verifica se usuario nao logado devolve 401`() = testApplication {
+        application { configBasica() }
 
-    //     /* 4 – sessão antiga já não funciona */
-    //     val after = client.get("/usuario-logado") { cookie(sessao.name, sessao.value) }
-    //     assertEquals(HttpStatusCode.Unauthorized, after.status)
-    // }
+        // Tenta acessar endpoint sem estar logado
+        val resp = client.get("/usuario-logado")
+        assertEquals(HttpStatusCode.Unauthorized, resp.status)
+        assertTrue(resp.bodyAsText().contains("Usuário não logado"))
+    }
+
+    // usuário logado
+    // senha incorreta
+
 }
