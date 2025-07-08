@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
     id("jacoco") // para cobertura de testes
+    id("org.jetbrains.kotlinx.kover") version "0.7.3"
 }
 
 group = "com.finature"
@@ -68,4 +69,9 @@ tasks.jacocoTestReport {
         html.required.set(true)
         xml.required.set(false)
     }
+    classDirectories.setFrom(
+        fileTree("build/classes/kotlin/main") {
+            exclude("**/UsuarioSessao*DefaultConstructorMarker*.class")        
+        }
+    )
 }

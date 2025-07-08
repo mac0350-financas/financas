@@ -1,4 +1,4 @@
-package com.finature.seed
+package com.finature.db.seed
 
 import com.finature.db.dao.UsuarioDAO
 import com.github.javafaker.Faker

@@ -17,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach
 /* ---- Banco ---- */
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.dao.id.EntityID
 import com.finature.db.tables.*
 
 /* ---- Domínio ---- */
@@ -26,6 +28,7 @@ import com.finature.services.UsuarioService
 
 class TransacaoRouteTest {
 
+    private val nomeOk = "Alice"
     private val emailOk = "alice@example.com"
     private val senhaOk = "123456"
 
@@ -38,8 +41,14 @@ class TransacaoRouteTest {
             driver = "org.h2.Driver"
         )
         transaction {
-            SchemaUtils.create(UsuarioTable, TransacaoTable, MetaTable, InvestimentoTable)
-            UsuarioService(UsuarioRepository()).criarConta("Alice", emailOk, senhaOk)
+            SchemaUtils.create(UsuarioTable, TransacaoTable, TipoTransacaoTable, MetaTable, InvestimentoTable)
+            UsuarioTable.deleteWhere { UsuarioTable.email eq emailOk }
+            UsuarioService(UsuarioRepository()).criarConta(nomeOk, emailOk, senhaOk)
+
+            TipoTransacaoTable.insert {
+                it[id] = EntityID(-1, TipoTransacaoTable)
+                it[tipo] = -1
+            }
         }
     }
 
@@ -57,7 +66,7 @@ class TransacaoRouteTest {
     private suspend fun ApplicationTestBuilder.fazerLogin(): String {
         val resp = client.post("/formulario-login") {
             contentType(ContentType.Application.Json)
-            setBody("""{"email":"$emailOk","senha":"$senhaOk"}""")
+            setBody("""{"nome":"$nomeOk", "email":"$emailOk","senha":"$senhaOk"}""")
         }
         assertEquals(HttpStatusCode.OK, resp.status)
         return resp.setCookie().single().value
@@ -73,16 +82,40 @@ class TransacaoRouteTest {
             contentType(ContentType.Application.Json)
             setBody("""
                 {
-                    "descricao":"Compra supermercado",
-                    "valor":150.50,
-                    "categoria":"Alimentação",
                     "data":"2024-01-15",
-                    "tipoId":-1
+                    "descricao":"Compra supermercado",
+                    "categoria":"Alimentação",
+                    "valor":150.50,
+                    "tipoId":-1,
+                    "usuarioId":1
                 }
             """)
         }
         assertEquals(HttpStatusCode.InternalServerError, resp.status)
         assertTrue(resp.bodyAsText().contains("Usuário não autenticado"))
+    }
+
+    @Test
+    fun `criar transacao com autenticacao devolve 201`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.post("/formulario-transacao") {
+            contentType(ContentType.Application.Json)
+            cookie("USUARIO_SESSAO", cookie)
+            setBody("""
+                {
+                    "descricao":"Compra supermercado",
+                    "valor":150.50,
+                    "categoria":"Alimentação",
+                    "data":"2024-01-15",
+                    "tipoId":-1,
+                    "usuarioId":1
+                }
+            """)
+        }
+        assertEquals(HttpStatusCode.Created, resp.status)
+        assertTrue(resp.bodyAsText().contains("Transação realizada com sucesso"))
     }
 
     /* ---------- TESTES GET /api/transacoes/total ---------- */
@@ -96,6 +129,55 @@ class TransacaoRouteTest {
         assertTrue(resp.bodyAsText().contains("Usuário não autenticado"))
     }
 
+    @Test
+    fun `buscar total sem parametro tipo devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/total?mes=01&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'tipo' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar total sem parametro mes devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/total?tipo=-1&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'mes' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar total sem parametro ano devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/total?tipo=-1&mes=01") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'ano' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar total com parametros validos devolve 200`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/total?tipo=-1&mes=01&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.OK, resp.status)
+        assertTrue(resp.bodyAsText().contains("total"))
+    }
+    
+
     /* ---------- TESTES GET /api/transacoes/lista ---------- */
 
     @Test
@@ -105,6 +187,54 @@ class TransacaoRouteTest {
         val resp = client.get("/api/transacoes/lista?tipo=-1&mes=01&ano=2024")
         assertEquals(HttpStatusCode.InternalServerError, resp.status)
         assertTrue(resp.bodyAsText().contains("Usuário não autenticado"))
+    }
+
+    @Test
+    fun `buscar lista sem parametro tipo devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/lista?mes=01&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'tipo' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar lista sem parametro mes devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/lista?tipo=-1&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'mes' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar lista sem parametro ano devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/lista?tipo=-1&mes=01") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'ano' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar lista com parametros validos devolve 200`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/lista?tipo=-1&mes=01&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.OK, resp.status)
+        assertTrue(resp.bodyAsText().contains("lista"))
     }
 
     /* ---------- TESTES GET /api/transacoes/grafico ---------- */
@@ -118,5 +248,40 @@ class TransacaoRouteTest {
         assertTrue(resp.bodyAsText().contains("Usuário não autenticado"))
     }
 
+    @Test
+    fun `buscar grafico sem parametro tipo devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/grafico?mes=01&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'tipo' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar grafico sem parametro mes devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/grafico?tipo=-1&ano=2024") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'mes' é obrigatório"))
+    }
+
+    @Test
+    fun `buscar grafico sem parametro ano devolve 400`() = testApplication {
+        application { configBasica() }
+        val cookie = fazerLogin()
+
+        val resp = client.get("/api/transacoes/grafico?tipo=-1&mes=01") {
+            cookie("USUARIO_SESSAO", cookie)
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp.status)
+        assertTrue(resp.bodyAsText().contains("Parâmetro 'ano' é obrigatório"))
+    }
 
 }
