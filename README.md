@@ -10,6 +10,11 @@ A aplicação segue a arquitetura MVC, com backend desenvolvido em Kotlin utiliz
 - Versão do Ktor: 3.1.1
 - Versão do Kotlin: 2.1.20
 
+<<<<<<< Updated upstream
+=======
+Para instalar as dependências do NPM, faça o comando `npm install` no diretório `client`.
+
+>>>>>>> Stashed changes
 ## Acessando o front-end
 
 1. Acesse um terminal;
@@ -30,22 +35,43 @@ O back-end estará rodando em [localhost:8080](http://localhost:8080)
 
 ## Executando os testes
 
-Ainda em fase de implementação
+Para executar os testes unitários e de integração:
+
+```bash
+cd server
+./gradlew test
+```
+
+Para gerar relatório de cobertura:
+
+```bash
+./gradlew jacocoTestReport
+```
+
+O relatório será gerado em `build/reports/jacoco/test/html/index.html`
 
 ## Estrutura do projeto
 
 ```text
 finature/
 ├── server/                          # Backend (Ktor + Kotlin)
-│   ├── config/                      # Configurações (segurança, logs, serialização, etc)
-│   ├── models/                      # Modelos de dados (Usuario, Transacao, Meta, etc)
-│   ├── services/                    # Lógica de negócio e integração com banco
-│   ├── schemas/                     # Schemas para persistência (Exposed, etc)
-│   ├── Application.kt               # Arquivo principal do servidor
-│   ├── Routing.kt                   # Definições de rotas
-│   ├── Security.kt                  # Configuração de sessões e autenticação
-│   ├── Monitoring.kt                # Monitoramento com CallLogging
-│   └── Serialization.kt             # Configuração de serialização JSON
+│   ├── src/main/kotlin/com/finature/
+│   │   ├── db/                      # Camada de persistência
+│   │   │   ├── dao/                 # Data Access Objects (Exposed)
+│   │   │   ├── seed/                # Dados iniciais do sistema
+│   │   │   └── tables/              # Definições das tabelas
+│   │   ├── models/                  # Modelos de dados (DTOs)
+│   │   ├── repositories/            # Repositórios para acesso a dados
+│   │   ├── routes/                  # Definições de rotas da API
+│   │   ├── services/                # Lógica de negócio
+│   │   ├── sessions/                # Gerenciamento de sessões
+│   │   ├── Application.kt           # Arquivo principal do servidor
+│   │   └── *.kt                     # Configurações (HTTP, DB, etc)
+│   ├── src/test/kotlin/             # Testes unitários e de integração
+│   │   ├── com/finature/repositories/ # Testes dos repositórios
+│   │   └── com/finature/services/   # Testes dos services
+│   ├── config/                      # Configurações do projeto
+│   └── resources/                   # Recursos da aplicação
 │
 ├── client/                          # Frontend (React + Vite)
 │   ├── src/
@@ -56,10 +82,31 @@ finature/
 │   ├── App.css                      # Estilo principal
 │   └── index.css                    # Estilo base do projeto
 │
-├── gradle/                           # Configurações do Gradle (libs.versions.toml, etc)
+├── gradle/                          # Configurações do Gradle (libs.versions.toml, etc)
 │
 └── README.md                        
 ```
+
+## Funcionalidades implementadas
+
+- **Gestão de usuários**: Cadastro e autenticação com sessões
+- **Transações financeiras**: Registro de gastos e receitas por categoria
+- **Metas financeiras**: Definição e acompanhamento de metas de gastos/receitas
+- **Simulador de investimentos**: Comparação entre poupança e investimentos atrelados à SELIC
+- **Relatórios**: Visualização de transações por período e categoria
+
+## Tecnologias utilizadas
+
+### Backend
+- Kotlin com Ktor
+- Exposed ORM para persistência
+- H2 Database (testes)
+- JUnit 5 para testes
+- Mockk para mocks em testes
+
+### Frontend
+- React com Vite
+- Material-UI para componentes
 
 ## Uso de IA no desenvolvimento
 
