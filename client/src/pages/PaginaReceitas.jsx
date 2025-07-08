@@ -97,7 +97,7 @@ function PaginaReceitas() {
                                 Metas de receitas
                     </Typography>
                     <GradeMetas key={reloadTriggerMetas + reloadTrigger + reloadTriggerDescricao} onSuccess={handleMetaEnviada} tipo="receitas" />
-                </Box>
+                </Box> 
 
                 
             </Box>

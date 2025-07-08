@@ -26,13 +26,13 @@ function GradeMetas({ onSuccess, tipo }) {
     }
 
     useEffect(() => {
-        fetchMetas();
+        fetchMetas(); 
     }, [tipo]);
 
 
     return (
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 4 }}>
-            <BotaoNovaMeta onSuccess={onSuccess} tipo="gasto" />
+            <BotaoNovaMeta onSuccess={onSuccess} tipo={tipo === 'gastos' ? 'gasto' : 'receita'} />
             {loading ? (
                 <Typography sx={{ gridColumn: 'span 4', textAlign: 'center' }}>Carregando metas...</Typography>
             ) : (
