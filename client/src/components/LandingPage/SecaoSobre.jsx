@@ -25,7 +25,6 @@ const SecaoSobre = () => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         textAlign: 'left',
-        paddingLeft: '90px',
       }}
     >
       <Typography
