@@ -18,4 +18,14 @@ class ApplicationTest {
         }
     }
 
+    @Test
+    fun testRotaInexistente() = testApplication {
+        application {
+            module()
+        }
+        client.get("/nao-existe").apply {
+            assertEquals(HttpStatusCode.NotFound, status)
+        }
+    }
+
 }

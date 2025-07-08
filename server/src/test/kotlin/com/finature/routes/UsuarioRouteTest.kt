@@ -107,6 +107,7 @@ class UsuarioRouteTest {
         assertEquals(HttpStatusCode.Unauthorized, sessaoResp.status)
         assertTrue(sessaoResp.bodyAsText().contains("Usuário não logado"))
     }
+
     @Test
     fun `verifica se usuario nao logado devolve 401`() = testApplication {
         application { configBasica() }
@@ -117,7 +118,72 @@ class UsuarioRouteTest {
         assertTrue(resp.bodyAsText().contains("Usuário não logado"))
     }
 
-    // usuário logado
-    // senha incorreta
+    @Test
+    fun `login com senha incorreta devolve 500`() = testApplication {
+        application { configBasica() }
+
+        val resp = client.post("/formulario-login") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"$emailOk","senha":"senhaErrada"}""")
+        }
+
+        assertEquals(HttpStatusCode.InternalServerError, resp.status)
+        assertTrue(resp.bodyAsText().contains("Erro interno do servidor"))
+    }
+
+
+    @Test
+    fun `login com email nao encontrado devolve 500`() = testApplication {
+        application { configBasica() }
+
+        val resp = client.post("/formulario-login") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"naoexiste@example.com","senha":"qualquer"}""")
+        }
+
+        // Agora espera InternalServerError (500) conforme simplificação
+        assertEquals(HttpStatusCode.InternalServerError, resp.status)
+        assertTrue(resp.bodyAsText().contains("Erro interno do servidor"))
+    }
+
+
+    @Test
+    fun `cadastro com dados incompletos devolve 400`() = testApplication {
+        application { configBasica() }
+
+        val resp1 = client.post("/formulario-cadastro") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"nome":"Bob","email":"","senha":"senhaSegura"}""")
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp1.status)
+        assertTrue(resp1.bodyAsText().contains("Dados incompletos"))
+
+        val resp2 = client.post("/formulario-cadastro") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"nome":"","email":"teste@teste.com","senha":"senhaSegura"}""")
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp2.status)
+        assertTrue(resp2.bodyAsText().contains("Dados incompletos"))
+
+        val resp3 = client.post("/formulario-cadastro") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"nome":"Bob","email":"teste@teste.com","senha":""}""")
+        }
+        assertEquals(HttpStatusCode.BadRequest, resp3.status)
+        assertTrue(resp3.bodyAsText().contains("Dados incompletos"))
+    }
+
+    @Test
+    fun `cadastro com JSON mal formado devolve 500`() = testApplication {
+        application { configBasica() }
+
+        val resp = client.post("/formulario-cadastro") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"nome":123,"email":true,"senha":[]}""")
+        }
+
+        assertEquals(HttpStatusCode.InternalServerError, resp.status)
+        assertTrue(resp.bodyAsText().contains("Erro interno do servidor"))
+    }
 
 }

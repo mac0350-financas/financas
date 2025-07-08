@@ -4,7 +4,7 @@ import com.finature.models.SimulationRequest
 import com.finature.models.SimulationPoint
 import com.finature.models.Investmento
 import kotlin.math.max
-import kotlin.math.pow
+import kotlin.math.pow 
 
 object InvestimentoService {
     

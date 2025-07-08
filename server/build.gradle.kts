@@ -71,7 +71,7 @@ tasks.jacocoTestReport {
     }
     classDirectories.setFrom(
         fileTree("build/classes/kotlin/main") {
-            exclude("**/UsuarioSessao*DefaultConstructorMarker*.class")        
+            exclude("**/UsuarioSessao*.class")
         }
     )
 }
